@@ -41,6 +41,13 @@
 
     direnv
     starship
+
+    graphviz
+    plantuml
+    texlive.combined.scheme-basic
+
+    niv
+    rustup
   ];
 
   home.file = {

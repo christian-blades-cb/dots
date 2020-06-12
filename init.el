@@ -204,25 +204,6 @@
   :config
   (load-theme 'moe-light))
 
-;; (use-package material-theme :ensure t)
-
-;; (defvar *blades-theme-dark* 'material)
-;; (defvar *blades-theme-light* 'moe-light)
-;; (defvar *blades-theme-light* 'material-light)
-;; (defvar *blades-theme-current* *blades-theme-light*)
-
-(defun blades/next-theme (theme)
-  (if (eq theme 'default)
-      (disable-theme *blades-theme-current)
-    (progn (load-theme theme t))
-    )
-  (setq *blades-theme-current* theme))
-
-(defun blades/toggle-theme ()
-  (interactive)
-  (cond ((eq *blades-theme-current* *blades-theme-dark*) (blades/next-theme *blades-theme-light*))
-	((eq *blades-theme-current* *blades-theme-light*) (blades/next-theme *blades-theme-dark*))
-	((eq *blades-theme-current* 'default) (blades/next-theme *blades-theme-dark*))))
 
 ;; Git-Gutter
 (use-package git-gutter
@@ -522,7 +503,7 @@
   :ensure t
   :after magit
   :config
-  (add-to-list 'forge-alist '("github.corporate.network" "github.corporate.network/api/v3" "github.corporate.network" forge-github-repository))
+  ;; (add-to-list 'forge-alist '("github.corporate.network" "github.corporate.network/api/v3" "github.corporate.network" forge-github-repository))
   (add-to-list 'magit-status-sections-hook 'forge-insert-assigned-pullreqs)
   (add-to-list 'magit-status-sections-hook 'forge-insert-topic-review-requests)
   )
@@ -561,22 +542,6 @@
 
 ;; (setq ediff-merge-split-window-function 'split-window-vertically)
 (setq ediff-window-setup-function 'ediff-setup-windows-plain) ;; no popout frame plz!
-
-;; python
-;; (use-package jedi
-;;   :ensure t
-;;   :after (python-mode)
-;;   :hook
-;;   ((python-mode . jedi:setup))
-;;   :config
-;;   ;; (add-hook 'python-mode-hook 'jedi:setup)
-;;   (setq jedi:complete-on-dot t)
-;;   )
-
-;; (use-package company-jedi
-;;   :ensure t
-;;   :config
-;;   (add-to-list 'company-backends 'company-jedi))
 
 (use-package sphinx-doc
   :ensure t
@@ -754,9 +719,10 @@
 
 (use-package git-link
   :ensure t
-  :config
-  (add-to-list 'git-link-remote-alist '("github.corporate.network" git-link-github))
-  (add-to-list 'git-link-commit-remote-alist '("github.corporate.network" git-link-commit-github)))
+  ;; :config
+  ;; (add-to-list 'git-link-remote-alist '("github.corporate.network" git-link-github))
+  ;; (add-to-list 'git-link-commit-remote-alist '("github.corporate.network" git-link-commit-github))
+  )
 
 (use-package ox-gfm :ensure t)
 
@@ -822,171 +788,8 @@
 
 (use-package nix-mode :ensure t)
 
-;; ;;; Fira code
-;; ;; This works when using emacs --daemon + emacsclient
-;; (add-hook 'after-make-frame-functions (lambda (frame) (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")))
-;; ;; This works when using emacs without server/client
-;; (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol")
-;; ;; I haven't found one statement that makes both of the above situations work, so I use both for now
-
-;; (defconst fira-code-font-lock-keywords-alist
-;;   (mapcar (lambda (regex-char-pair)
-;;             `(,(car regex-char-pair)
-;;               (0 (prog1 ()
-;;                    (compose-region (match-beginning 1)
-;;                                    (match-end 1)
-;;                                    ;; The first argument to concat is a string containing a literal tab
-;;                                    ,(concat "	" (list (decode-char 'ucs (cadr regex-char-pair)))))))))
-;;           '(("\\(www\\)"                   #Xe100)
-;;             ("[^/]\\(\\*\\*\\)[^/]"        #Xe101)
-;;             ("\\(\\*\\*\\*\\)"             #Xe102)
-;;             ("\\(\\*\\*/\\)"               #Xe103)
-;;             ("\\(\\*>\\)"                  #Xe104)
-;;             ("[^*]\\(\\*/\\)"              #Xe105)
-;;             ("\\(\\\\\\\\\\)"              #Xe106)
-;;             ("\\(\\\\\\\\\\\\\\)"          #Xe107)
-;;             ("\\({-\\)"                    #Xe108)
-;;             ("\\(\\[\\]\\)"                #Xe109)
-;;             ("\\(::\\)"                    #Xe10a)
-;;             ("\\(:::\\)"                   #Xe10b)
-;;             ("[^=]\\(:=\\)"                #Xe10c)
-;;             ("\\(!!\\)"                    #Xe10d)
-;;             ("\\(!=\\)"                    #Xe10e)
-;;             ("\\(!==\\)"                   #Xe10f)
-;;             ("\\(-}\\)"                    #Xe110)
-;;             ("\\(--\\)"                    #Xe111)
-;;             ("\\(---\\)"                   #Xe112)
-;;             ("\\(-->\\)"                   #Xe113)
-;;             ("[^-]\\(->\\)"                #Xe114)
-;;             ("\\(->>\\)"                   #Xe115)
-;;             ("\\(-<\\)"                    #Xe116)
-;;             ("\\(-<<\\)"                   #Xe117)
-;;             ("\\(-~\\)"                    #Xe118)
-;;             ("\\(#{\\)"                    #Xe119)
-;;             ("\\(#\\[\\)"                  #Xe11a)
-;;             ("\\(##\\)"                    #Xe11b)
-;;             ("\\(###\\)"                   #Xe11c)
-;;             ("\\(####\\)"                  #Xe11d)
-;;             ("\\(#(\\)"                    #Xe11e)
-;;             ("\\(#\\?\\)"                  #Xe11f)
-;;             ("\\(#_\\)"                    #Xe120)
-;;             ("\\(#_(\\)"                   #Xe121)
-;;             ("\\(\\.-\\)"                  #Xe122)
-;;             ("\\(\\.=\\)"                  #Xe123)
-;;             ("\\(\\.\\.\\)"                #Xe124)
-;;             ("\\(\\.\\.<\\)"               #Xe125)
-;;             ("\\(\\.\\.\\.\\)"             #Xe126)
-;;             ("\\(\\?=\\)"                  #Xe127)
-;;             ("\\(\\?\\?\\)"                #Xe128)
-;;             ("\\(;;\\)"                    #Xe129)
-;;             ("\\(/\\*\\)"                  #Xe12a)
-;;             ("\\(/\\*\\*\\)"               #Xe12b)
-;;             ("\\(/=\\)"                    #Xe12c)
-;;             ("\\(/==\\)"                   #Xe12d)
-;;             ("\\(/>\\)"                    #Xe12e)
-;;             ("\\(//\\)"                    #Xe12f)
-;;             ("\\(///\\)"                   #Xe130)
-;;             ("\\(&&\\)"                    #Xe131)
-;;             ("\\(||\\)"                    #Xe132)
-;;             ("\\(||=\\)"                   #Xe133)
-;;             ("[^|]\\(|=\\)"                #Xe134)
-;;             ("\\(|>\\)"                    #Xe135)
-;;             ("\\(\\^=\\)"                  #Xe136)
-;;             ("\\(\\$>\\)"                  #Xe137)
-;;             ("\\(\\+\\+\\)"                #Xe138)
-;;             ("\\(\\+\\+\\+\\)"             #Xe139)
-;;             ("\\(\\+>\\)"                  #Xe13a)
-;;             ("\\(=:=\\)"                   #Xe13b)
-;;             ("[^!/]\\(==\\)[^>]"           #Xe13c)
-;;             ("\\(===\\)"                   #Xe13d)
-;;             ("\\(==>\\)"                   #Xe13e)
-;;             ("[^=]\\(=>\\)"                #Xe13f)
-;;             ("\\(=>>\\)"                   #Xe140)
-;;             ("\\(<=\\)"                    #Xe141)
-;;             ("\\(=<<\\)"                   #Xe142)
-;;             ("\\(=/=\\)"                   #Xe143)
-;;             ("\\(>-\\)"                    #Xe144)
-;;             ("\\(>=\\)"                    #Xe145)
-;;             ("\\(>=>\\)"                   #Xe146)
-;;             ("[^-=]\\(>>\\)"               #Xe147)
-;;             ("\\(>>-\\)"                   #Xe148)
-;;             ("\\(>>=\\)"                   #Xe149)
-;;             ("\\(>>>\\)"                   #Xe14a)
-;;             ("\\(<\\*\\)"                  #Xe14b)
-;;             ("\\(<\\*>\\)"                 #Xe14c)
-;;             ("\\(<|\\)"                    #Xe14d)
-;;             ("\\(<|>\\)"                   #Xe14e)
-;;             ("\\(<\\$\\)"                  #Xe14f)
-;;             ("\\(<\\$>\\)"                 #Xe150)
-;;             ("\\(<!--\\)"                  #Xe151)
-;;             ("\\(<-\\)"                    #Xe152)
-;;             ("\\(<--\\)"                   #Xe153)
-;;             ("\\(<->\\)"                   #Xe154)
-;;             ("\\(<\\+\\)"                  #Xe155)
-;;             ("\\(<\\+>\\)"                 #Xe156)
-;;             ("\\(<=\\)"                    #Xe157)
-;;             ("\\(<==\\)"                   #Xe158)
-;;             ("\\(<=>\\)"                   #Xe159)
-;;             ("\\(<=<\\)"                   #Xe15a)
-;;             ("\\(<>\\)"                    #Xe15b)
-;;             ("[^-=]\\(<<\\)"               #Xe15c)
-;;             ("\\(<<-\\)"                   #Xe15d)
-;;             ("\\(<<=\\)"                   #Xe15e)
-;;             ("\\(<<<\\)"                   #Xe15f)
-;;             ("\\(<~\\)"                    #Xe160)
-;;             ("\\(<~~\\)"                   #Xe161)
-;;             ("\\(</\\)"                    #Xe162)
-;;             ("\\(</>\\)"                   #Xe163)
-;;             ("\\(~@\\)"                    #Xe164)
-;;             ("\\(~-\\)"                    #Xe165)
-;;             ("\\(~=\\)"                    #Xe166)
-;;             ("\\(~>\\)"                    #Xe167)
-;;             ("[^<]\\(~~\\)"                #Xe168)
-;;             ("\\(~~>\\)"                   #Xe169)
-;;             ("\\(%%\\)"                    #Xe16a)
-;;            ;; ("\\(x\\)"                   #Xe16b) This ended up being hard to do properly so i'm leaving it out.
-;;             ("[^:=]\\(:\\)[^:=]"           #Xe16c)
-;;             ("[^\\+<>]\\(\\+\\)[^\\+<>]"   #Xe16d)
-;;             ("[^\\*/<>]\\(\\*\\)[^\\*/<>]" #Xe16f))))
-
-;; (defun add-fira-code-symbol-keywords ()
-;;   (font-lock-add-keywords nil fira-code-font-lock-keywords-alist))
-
-;; disabled for now, causing woes over ssh
-;; (add-hook 'prog-mode-hook #'add-fira-code-symbol-keywords)
-
 (when (window-system)
   (set-frame-font "Fira Code"))
-
-;; (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-;;                (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-;;                (36 . ".\\(?:>\\)")
-;;                (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-;;                (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-;;                (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
-;;                (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-;;                (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-;;                (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-;;                (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
-;;                (48 . ".\\(?:x[a-zA-Z]\\)")
-;;                (58 . ".\\(?:::\\|[:=]\\)")
-;;                (59 . ".\\(?:;;\\|;\\)")
-;;                (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
-;;                (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
-;;                (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-;;                (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-;;                (91 . ".\\(?:]\\)")
-;;                (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-;;                (94 . ".\\(?:=\\)")
-;;                (119 . ".\\(?:ww\\)")
-;;                (123 . ".\\(?:-\\)")
-;;                (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-;;                (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
-;;                )
-;;              ))
-;;   (dolist (char-regexp alist)
-;;     (set-char-table-range composition-function-table (car char-regexp)
-;;                           `([,(cdr char-regexp) 0 font-shape-gstring]))))
 
 ;; gpg pinentry in the minibuffer
 (setq epa-pinentry-mode 'loopback)
@@ -1033,7 +836,10 @@
 
 (use-package direnv
   :ensure t
-  :config (direnv-mode t))
+  :hook
+  ((prog-mode) . direnv-update-environment)
+  :config (direnv-mode t)
+  )
 
 ;; backslash (\) as escape character in sql
 (add-hook 'sql-mode-hook
