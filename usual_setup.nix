@@ -19,6 +19,8 @@
       ${pkgs.starship}/bin/starship init fish | source
       '';
     };
+
+    emacs.enable = true;
   };
 
   home.packages = with pkgs; [
@@ -40,4 +42,8 @@
     direnv
     starship
   ];
+
+  home.file = {
+    ".emacs.d/init.el".source = ./init.el;
+  };
 }
