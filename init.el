@@ -11,20 +11,10 @@
  ;; If there is more than one, they won't work right.
  '(ansi-term-color-vector
    [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
- '(column-number-mode t)
  '(custom-safe-themes
    (quote
     ("7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" "ed0b4fc082715fc1d6a547650752cd8ec76c400ef72eb159543db1770a27caa7" "021720af46e6e78e2be7875b2b5b05344f4e21fad70d17af7acfd6922386b61e" "42b9d85321f5a152a6aef0cc8173e701f572175d6711361955ecfb4943fe93af" "a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "7366916327c60fdf17b53b4ac7f565866c38e1b4a27345fe7facbf16b7a4e9e8" "b050365105e429cb517d98f9a267d30c89336e36b109a1723d95bc0f7ce8c11d" "3fa81193ab414a4d54cde427c2662337c2cab5dd4eb17ffff0d90bca97581eb6" "8cb818e0658f6cc59928a8f2b2917adc36d882267bf816994e00c5b8fcbf6933" "eae43024404a1e3c4ea853a9cf7f6f2ad5f091d17234ec3478a23591f25802eb" "c1390663960169cd92f58aad44ba3253227d8f715c026438303c09b9fb66cdfb" "732b807b0543855541743429c9979ebfb363e27ec91e82f463c91e68c772f6e3" "5dc0ae2d193460de979a463b907b4b2c6d2c9c4657b2e9e66b8898d2592e3de5" "98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
- '(display-battery-mode t)
- '(gnutls-trustfiles
-   (quote
-    ("/etc/ssl/certs/ca-certificates.crt" "/etc/pki/tls/certs/ca-bundle.crt" "/etc/ssl/ca-bundle.pem" "/usr/ssl/certs/ca-bundle.crt" "/usr/local/share/certs/ca-root-nss.crt")))
- '(magit-commit-arguments (quote ("--gpg-sign=BEA80D7D739AB85C")))
- '(magit-revert-arguments (quote ("--gpg-sign=BEA80D7D739AB85C")))
- '(package-selected-packages
-   (quote
-    (mastodon fish-mode direnv emacs-direnv direnv-mode json-mode nix-mode moe-theme vdiff-magit vdiff github-review forge xkcd dired-rsync ox-jira ox-pandoc plantuml-mode haskell-mode go-mode delight diminish company-lsp company-shell company-go company-jedi ob-async use-package-ensure-system-package projectile-ripgrep undo-tree bbdb org-jira lsp-python magit-todos magit-todo pulseaudio-control org-present helm-lobsters md4rd twittering-mode mdr4d jq-mode gist emacsshot butler jenkins gruvbox-theme plan9-theme faff-theme twilight-bright-theme lsp-go ob-go helm-rg weechat lsp-rust lsp-ui lsp-mode graphviz-dot-mode ob-restclient edit-indirect ob-rust intero figlet flycheck-protobuf string-inflection w3m ox-gfm git-link fic-mode go-eldoc flycheck-mypy emms cargo groovy-mode rust-playground go-scratch true markdown-mode jedi yasnippet go-impl ac-helm sphinx-doc flycheck-haskell beacon ox-ioslide ox-html5slide org-gcal helm-gtags multiple-cursors hl-todo magit protobuf-mode dockerfile-mode yaml-mode flycheck-rust racer rust-mode helm-company company helm-go-package flycheck-gometalinter auto-complete use-package rainbow-delimiters paredit material-theme helm-projectile helm-ag go-rename go-guru git-gutter flycheck default-text-scale)))
- '(send-mail-function (quote smtpmail-send-it)))
+)
 
 ;; make sure use-package is installed
 (require 'package)
@@ -69,6 +59,7 @@
 (menu-bar-mode -1)
 (setq inhibit-startup-screen t)
 (display-time-mode t)
+(column-number-mode t)
 (setq display-time-mail-string "")
 (setq ring-bell-function 'ignore)
 
@@ -516,7 +507,8 @@
   :ensure t
   :after forge
   :config
-  (setq github-review-host "github.corporate.network/api/v3")
+  ; (setq github-review-host "github.corporate.network/api/v3")
+  (put 'var 'safe-local-variable #'github-review-host)
   )
 
 (use-package vdiff

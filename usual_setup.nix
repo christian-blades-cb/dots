@@ -55,6 +55,8 @@ in {
 
     niv
     rustup
+
+    w3m
   ] ++ optional stdenv.isDarwin lorri;
 
   home.file = {
