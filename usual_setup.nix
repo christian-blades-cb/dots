@@ -3,6 +3,7 @@
 with pkgs.lib;
 let
   emacsPkg = if pkgs.stdenv.isDarwin then pkgs.emacsMacport else pkgs.emacs;
+  phpLanguageServer = import ./deps/php-language-server/default.nix { inherit pkgs; };
 in {
   services = optionalAttrs pkgs.stdenv.isLinux { lorri.enable = true; };
 
@@ -45,6 +46,7 @@ in {
     xsv
     ripgrep
     exa
+    dua
 
     zstd
     gnutar
@@ -57,6 +59,8 @@ in {
     rustup
 
     w3m
+    phpLanguageServer
+    nodePackages.typescript-language-server
   ] ++ optional stdenv.isDarwin lorri;
 
   home.file = {
