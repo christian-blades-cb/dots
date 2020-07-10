@@ -370,7 +370,9 @@
   :ensure t
   :hook ((rust-mode . lsp)
 	 (go-mode . lsp)
-	 (python-mode . lsp))
+	 (python-mode . lsp)
+	 (js-mode . lsp)
+	 (php-mode . lsp))
   :config
   ; (setq lsp-clients-go-imports-local-prefix "github.corporate.network")
   ; LSP will watch all files in the project
@@ -510,6 +512,8 @@
   ; (setq github-review-host "github.corporate.network/api/v3")
   (put 'var 'safe-local-variable #'github-review-host)
   )
+
+(put 'var 'safe-local-variable #'js-indent-level)
 
 (use-package vdiff
   :ensure t
@@ -776,6 +780,32 @@
   :config
   (setq magit-todos-exclude-globs '("**/vendor/*")))
 
+;; terraform
+(use-package terraform-mode
+  :ensure t
+  :config
+  (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode)
+  )
+
+(use-package terraform-doc :ensure t)
+
+(use-package company-terraform
+  :ensure t
+  :after (terraform-mode)
+  :hook ((terraform-mode . company-mode))
+  )
+
+;;php
+(use-package php-mode
+  :ensure t
+  :config
+  (add-hook 'php-mode-hook #'company-mode)
+  (add-hook 'php-mode-hook #'lsp)
+  )
+
+;; javascript
+(use-package nodejs-repl :ensure t)
+(use-package purescript-mode :ensure t)
 (use-package json-mode :ensure t)
 
 (use-package nix-mode :ensure t)
