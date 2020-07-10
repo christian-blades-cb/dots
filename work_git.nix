@@ -4,7 +4,7 @@
     git = {
       enable = true;
       userName = "Christian Blades";
-      userEmail = builtins.concatStringsSep "@" [ "christian.blades+github" "gmail.com" ];
+      userEmail = builtins.concatStringsSep "@" [ "blades" "mailchimp.com" ];
     };
   };
 }
