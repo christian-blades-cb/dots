@@ -53,7 +53,7 @@ in {
 
     graphviz
     plantuml
-    # texlive.combined.scheme-basic
+    ditaa
 
     niv
     rustup

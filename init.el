@@ -19,7 +19,7 @@
 ;; make sure use-package is installed
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
+	     '("melpa" . "https://melpa.org/packages/"))
 
 (unless package-archive-contents
   (package-refresh-contents))
@@ -188,7 +188,7 @@
 ;; Write backup files to their own directory
 (setq backup-directory-alist
       `(("." . ,(expand-file-name
-                 (concat user-emacs-directory "backups")))))
+		 (concat user-emacs-directory "backups")))))
 
 (use-package moe-theme
   :ensure t
@@ -272,7 +272,7 @@
 ;;   (require 'auto-complete-config)
 ;;   :load-path (lambda () (file-name-directory cb/go-autocomplete-file))
 ;;   :hook ((go-mode . auto-complete-mode)
-;; 	 (go-mode . yas-minor-mode))
+;;	 (go-mode . yas-minor-mode))
 ;;   :config
 ;;   (setq ac-go-expand-arguments-into-snippets t)
 ;;   )
@@ -352,11 +352,11 @@
 ;;   :ensure t
 ;;   :after (rust-mode company)
 ;;   :bind (:map rust-mode-map
-;; 	      ("TAB" . company-indent-or-complete-common))
+;;	      ("TAB" . company-indent-or-complete-common))
 ;;   :hook ((rust-mode . company-mode)
-;; 	 (rust-mode . racer-mode)
-;; 	 (racer-mode . eldoc-mode)
-;; 	 )
+;;	 (rust-mode . racer-mode)
+;;	 (racer-mode . eldoc-mode)
+;;	 )
 ;;   )
 
 (use-package use-package-ensure-system-package :ensure t)
@@ -458,7 +458,7 @@
   :ensure t
   :config
   (add-hook 'protobuf-mode-hook
-  	    (lambda () (c-add-style "four-space" cb/fourspace-protobuf-style t)))
+	    (lambda () (c-add-style "four-space" cb/fourspace-protobuf-style t)))
   (add-hook 'protobuf-mode-hook #'flycheck-mode)
   )
 
@@ -486,7 +486,7 @@
 
 ;; create a personal access token https://github.corporate.network/settings/tokens
 ;; add an entry to ~/.authinfo.gpg
-;; 
+;;
 ;; machine github.corporate.network/api/v3 login USERNAME^forge password TOKEN
 ;;
 ;; do the following in EACH repo you want to use magithub
@@ -510,10 +510,17 @@
   :after forge
   :config
   ; (setq github-review-host "github.corporate.network/api/v3")
-  (put 'var 'safe-local-variable #'github-review-host)
+  ;; don't ask me about this for dirlocals
+  (put 'github-review-host 'safe-local-variable 'stringp)
   )
 
-(put 'var 'safe-local-variable #'js-indent-level)
+;; reasonable things to set in dirlocals
+;;
+;; home-manager makes init.el immutable, so having these set is
+;; convenient considering the alternative is emacs getting irate over
+;; not being able to save changes to init.el
+(put 'js-indent-level 'safe-local-variable 'integerp)
+(put 'c-basic-offset 'safe-local-variable 'integerp)
 
 (use-package vdiff
   :ensure t
@@ -533,7 +540,7 @@
   (transient-suffix-put 'magit-dispatch "e" :description "vdiff (dwim)")
   (transient-suffix-put 'magit-dispatch "e" :command 'vdiff-magit-dwim)
   (transient-suffix-put 'magit-dispatch "E" :description "vdiff")
-  (transient-suffix-put 'magit-dispatch "E" :command 'vdiff-magit)  
+  (transient-suffix-put 'magit-dispatch "E" :command 'vdiff-magit)
   )
 
 ;; (setq ediff-merge-split-window-function 'split-window-vertically)
@@ -654,7 +661,7 @@
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "~/org/agenda.org" "Tasks")
 	 "* TODO %?\n  %i\n  %a")
-        ("j" "Journal" entry (file+datetree "~/org/journal.org")
+	("j" "Journal" entry (file+datetree "~/org/journal.org")
 	 "* %?\nEntered on %U\n  %i\n  %a")
 	("J" "Jenkins" entry (file+datetree "~/org/jenkins_shenanigans.org")
 	 "* Today, Jenkins %? :jenkins:\n  %t\n  %i\n"
@@ -668,7 +675,7 @@
       org-latex-packages-alist '(("" "minted"))
       org-latex-pdf-process
       '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+	"pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
 (setq org-latex-minted-options '(("breaklines" "true")
 				 ("breakanywhere" "true")))
 
@@ -690,8 +697,8 @@
   :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode)))
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode)))
 
 (use-package groovy-mode
   :ensure t
@@ -725,8 +732,8 @@
 (use-package w3m
   :ensure t
   :config
-  (setq browse-url-browser-function 'w3m-browse-url))
-;;'(browse-url-browser-function (quote browse-url-w3))
+  ;; (setq browse-url-browser-function 'w3m-browse-url)
+  )
 
 (use-package string-inflection
   :ensure t)
@@ -836,14 +843,14 @@
 ;;   :config
 ;;   (setq jiralib-url "https://jira.corporate.network")
 ;;   (setq org-jira-custom-jqls
-;; 	'(
-;; 	  (
-;; 	   :jql " project = MINE AND labels in (team-blades) AND status not in ('Ready to Release', done)"
-;; 		:limit 50
-;; 		:filename "team-blades"
-;; 		)
-	  
-;; 	  ))
+;;	'(
+;;	  (
+;;	   :jql " project = MINE AND labels in (team-blades) AND status not in ('Ready to Release', done)"
+;;		:limit 50
+;;		:filename "team-blades"
+;;		)
+
+;;	  ))
 ;;   )
 
 (setq org-agenda-files '("~/org/agenda.org"))
@@ -865,8 +872,8 @@
 
 ;; backslash (\) as escape character in sql
 (add-hook 'sql-mode-hook
-         (lambda ()
-           (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
+	 (lambda ()
+	   (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
 
 (use-package mastodon :ensure t)
 
