@@ -681,6 +681,7 @@
 
 (use-package ox-pandoc :ensure t)
 (use-package ox-jira :ensure t)
+(use-package ox-hugo :ensure t)
 
 (use-package ox-html5slide
   :ensure t)
