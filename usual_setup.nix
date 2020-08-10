@@ -47,6 +47,7 @@ in {
     ripgrep
     exa
     dua
+    _1password
 
     zstd
     gnutar
