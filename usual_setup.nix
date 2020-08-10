@@ -48,6 +48,7 @@ in {
     exa
     dua
     _1password
+    gibo
 
     zstd
     gnutar
