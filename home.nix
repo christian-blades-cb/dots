@@ -27,5 +27,6 @@ in {
     "${dots}/personal_gmail.nix"
     "${dots}/personal_git.nix"
     "${dots}/usual_setup.nix"
+    "${dots}/personal.nix"
   ];
 }
