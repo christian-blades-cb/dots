@@ -879,6 +879,10 @@
 	   (modify-syntax-entry ?\\ "\\" sql-mode-syntax-table)))
 
 (use-package mastodon :ensure t)
+(use-package dhall-mode
+  :ensure t
+  :mode "\\.dhall\\'"
+  )
 
 ;; (server-start)
 (custom-set-faces
