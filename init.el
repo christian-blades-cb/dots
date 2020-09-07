@@ -372,7 +372,9 @@
 	 (go-mode . lsp)
 	 (python-mode . lsp)
 	 (js-mode . lsp)
-	 (php-mode . lsp))
+	 (php-mode . lsp)
+	 (c++-mode . lsp)
+	 )
   :config
   ; (setq lsp-clients-go-imports-local-prefix "github.corporate.network")
   ; LSP will watch all files in the project
