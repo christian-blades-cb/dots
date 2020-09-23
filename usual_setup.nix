@@ -97,6 +97,9 @@ in {
     _1password
     gibo
     gotop
+    youtube-dl
+    mpd
+    mpc_cli
 
     zstd
     gnutar
@@ -126,5 +129,34 @@ in {
     font:
       normal:
         family: FiraCode
+  '';
+  xdg.configFile."mpd/mpd.conf".text = let
+    linuxAudio = ''
+      audio_output {
+        type            "pulse"
+        name            "pulse audio"
+      }
+    '';
+    darwinAudio = ''
+      audio_output {
+        type                  "osx"
+        name                  "CoreAudio"
+        mixer_type            "software"
+      }
+    '';
+  in ''
+    ${(pkgs.lib.optionalString pkgs.stdenv.isLinux linuxAudio)}
+    ${(pkgs.lib.optionalString pkgs.stdenv.isDarwin darwinAudio)}
+
+    music_directory    "~/Music"
+    db_file            "~/.config/mpd/database"
+    playlist_directory "~/.config/mpd/playlists"
+    pid_file           "~/.config/mpd/mpd.pid"
+    state_file         "~/.config/mpd/state"
+    log_file           "syslog"
+    auto_update        "yes"
+
+    bind_to_address    "127.0.0.1"
+    port               "6600"
   '';
 }

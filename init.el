@@ -193,8 +193,7 @@
 (use-package moe-theme
   :ensure t
   :config
-  (load-theme 'moe-light))
-
+  (moe-light))
 
 ;; Git-Gutter
 (use-package git-gutter
@@ -715,8 +714,18 @@
 (use-package emms
   :ensure t
   :config
-  (emms-standard)
-  (emms-default-players))
+  ;; (emms-standard)
+  ;; (emms-default-players)
+  (require 'emms-player-mpd)
+  (emms-all)
+  (setq emms-player-list '(emms-player-mpd))
+  (setq emms-info-functions '(emms-info))
+  (setq emms-player-mpd-server-name "localhost")
+  (setq emms-player-mpd-server-port "6600")
+  (setq mpc-host "localhost:6600")
+  (emms-player-set emms-player-mpd 'regex
+                 "\\.ogg\\|\\.mp3\\|\\.wma\\|\\.ogm\\|\\.asf\\|\\.mkv\\|http://\\|mms://\\|\\.rmvb\\|\\.flac\\|\\.vob\\|\\.m4a\\|\\.ape\\|\\.mpc\\|\\.opus")
+  )
 
 (use-package fic-mode
   :ensure t
