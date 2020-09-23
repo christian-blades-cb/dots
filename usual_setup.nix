@@ -4,7 +4,7 @@ with pkgs.lib;
 let
   emacsPkg = if pkgs.stdenv.isDarwin then pkgs.emacsMacport else pkgs.emacs26;
   phpLanguageServer = import ./deps/php-language-server/default.nix { inherit pkgs; };
-  dracula = pkgs.tmuxPlugins.mkDerivation {
+  draculaTmux = pkgs.tmuxPlugins.mkDerivation {
     pluginName = "dracula";
     version = "unstable-2020-09-20";
     src = pkgs.fetchFromGitHub {
@@ -14,6 +14,14 @@ let
       sha256 = "0k1f3chhmnv6f2022cj58j3nyv6ssaqadvnvcc6bzk0y9ha70gnl";
     };
   };
+  draculaAlacritty = let
+    src = pkgs.fetchFromGitHub {
+      owner = "dracula";
+      repo = "alacritty";
+      rev = "9579552396a5341ea3717980ecf58c661149c8f9";
+      sha256 = "1q6dwj9c8yipbqvydnrmc4kwsflrkix8i51nhn4n23k9sqa9wjz1";
+    };
+  in "${src}/dracula.yml";
 in {
   services = optionalAttrs pkgs.stdenv.isLinux { lorri.enable = true; };
 
@@ -22,8 +30,7 @@ in {
   programs = {
     fish = {
       enable = true;
-
-      shellAbbrs = {
+      shellAliases = {
         ll = "${pkgs.exa}/bin/exa -l";
         l = "${pkgs.exa}/bin/exa";
       };
@@ -57,19 +64,21 @@ in {
       plugins = with pkgs.tmuxPlugins; [
         yank fzf-tmux-url
         {
-          plugin = dracula;
+          plugin = draculaTmux;
           extraConfig = ''
             set -g @dracula-show-weather false
             set -g @dracula-military-time true
             set -g @dracula-cpu-usage true
             set -g @dracula-ram-usage true
             set -g @dracula-show-network false
+
+            set-option -g default-shell ${pkgs.fish}/bin/fish
           '';
         }
-
       ];
     };
 
+    alacritty.enable = true;
     bat.enable = true;
     jq.enable = true;
     texlive.enable = true;
@@ -87,6 +96,7 @@ in {
     dua
     _1password
     gibo
+    gotop
 
     zstd
     gnutar
@@ -110,4 +120,11 @@ in {
   home.file = {
     ".emacs.d/init.el".source = ./init.el;
   };
+  xdg.configFile."alacritty/alacritty.yml".text = ''
+    import:
+      - ${draculaAlacritty}
+    font:
+      normal:
+        family: FiraCode
+  '';
 }
