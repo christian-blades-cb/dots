@@ -4,28 +4,33 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-term-color-vector
-   [unspecified "#FFFFFF" "#d15120" "#5f9411" "#d2ad00" "#6b82a7" "#a66bab" "#6b82a7" "#505050"] t)
- '(custom-safe-themes
-   (quote
-    ("7675ffd2f5cb01a7aab53bcdd702fa019b56c764900f2eea0f74ccfc8e854386" "13d20048c12826c7ea636fbe513d6f24c0d43709a761052adbca052708798ce3" "ed0b4fc082715fc1d6a547650752cd8ec76c400ef72eb159543db1770a27caa7" "021720af46e6e78e2be7875b2b5b05344f4e21fad70d17af7acfd6922386b61e" "42b9d85321f5a152a6aef0cc8173e701f572175d6711361955ecfb4943fe93af" "a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" "7366916327c60fdf17b53b4ac7f565866c38e1b4a27345fe7facbf16b7a4e9e8" "b050365105e429cb517d98f9a267d30c89336e36b109a1723d95bc0f7ce8c11d" "3fa81193ab414a4d54cde427c2662337c2cab5dd4eb17ffff0d90bca97581eb6" "8cb818e0658f6cc59928a8f2b2917adc36d882267bf816994e00c5b8fcbf6933" "eae43024404a1e3c4ea853a9cf7f6f2ad5f091d17234ec3478a23591f25802eb" "c1390663960169cd92f58aad44ba3253227d8f715c026438303c09b9fb66cdfb" "732b807b0543855541743429c9979ebfb363e27ec91e82f463c91e68c772f6e3" "5dc0ae2d193460de979a463b907b4b2c6d2c9c4657b2e9e66b8898d2592e3de5" "98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "8db4b03b9ae654d4a57804286eb3e332725c84d7cdab38463cb6b97d5762ad26" default)))
-)
+;; customizations are now session-local
+(setq custom-file (make-temp-file "emacs-custom"))
 
 ;; make sure use-package is installed
 (require 'package)
-(add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/"))
+(setq package-archives
+      '(("org" . "http://orgmode.org/elpa/")
+       ("melpa" . "https://melpa.org/packages/")
+       ("gnu" . "https://elpa.gnu.org/packages/")
+       ))
 
 (unless package-archive-contents
   (package-refresh-contents))
 
 (unless (package-installed-p 'use-package)
-  (package-install 'use-package))
+  (package-install 'use-package)
+  (eval-when-compile (require 'use-package)))
+
+;; increase GC threshold for startup
+(setq gc-cons-threshold 10000000)
+
+;; Restore after startup
+(add-hook 'after-init-hook
+	  (lambda ()
+	    (setq gc-cons-threshold 1000000)
+	    (message "gc-cons-threshold restored to %S"
+		     gc-cons-threshold)))
 
 ;; my settings broken out into their own packages
 (add-to-list 'load-path (expand-file-name (concat user-emacs-directory "extras")))
@@ -62,8 +67,9 @@
 (column-number-mode t)
 (setq display-time-mail-string "")
 (setq ring-bell-function 'ignore)
+(defalias 'yes-or-no-p 'y-or-n-p) ;; shorten yes/no prompts to y/n
 
-(use-package delight :ensure t)
+;; (use-package delight :ensure t)
 
 (use-package helm
   :ensure t
@@ -81,8 +87,6 @@
   (setq helm-gtags-auto-update t)
   (setq helm-gtags-ignore-case t)
   )
-
-(use-package helm-ag :ensure t :after helm)
 
 (use-package projectile
   :ensure t
@@ -193,7 +197,7 @@
 (use-package moe-theme
   :ensure t
   :config
-  (moe-light))
+  (moe-dark))
 
 ;; Git-Gutter
 (use-package git-gutter
@@ -630,15 +634,19 @@
     (define-key json-mode-map (kbd "C-c C-j") #'jq-interactively)))
 
 ;; org-mode
-(setq org-src-preserve-indentation nil)
-(setq org-src-tab-acts-natively t)
-(add-hook 'org-mode-hook (lambda () (setq indent-tabs-mode nil)))
-(setq org-src-fontify-natively t)
+(use-package org
+  :ensure org-plus-contrib
+  :config
+  (setq org-src-preserve-indentation nil)
+  (setq org-src-tab-acts-natively t)
+  (add-hook 'org-mode-hook (lambda () (setq indent-tabs-mode nil)))
+  (setq org-src-fontify-natively t)
+  )
+
 (use-package ob-async :ensure t)
 (use-package ob-restclient :ensure t)
 (use-package ob-rust :ensure t)
 (use-package ob-go :ensure t)
-(require 'org)
 (require 'ob-python)
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -733,7 +741,6 @@
   (add-hook 'prog-mode-hook 'fic-mode))
 
 (use-package git-link
-  :ensure t
   ;; :config
   ;; (add-to-list 'git-link-remote-alist '("github.corporate.network" git-link-github))
   ;; (add-to-list 'git-link-commit-remote-alist '("github.corporate.network" git-link-commit-github))
@@ -781,9 +788,6 @@
 
 (use-package org-present :ensure t)
 
-(use-package md4rd :ensure t
-  :config
-  (setq md4rd-subs-active '(rust emacs golang)))
 (use-package twittering-mode :ensure t)
 (use-package helm-lobsters
   :after helm
@@ -893,12 +897,12 @@
   :mode "\\.dhall\\'"
   )
 
+(use-package which-key :ensure t
+  :config
+  (which-key-mode))
+
+(use-package notmuch :ensure t)
+
 ;; (server-start)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)

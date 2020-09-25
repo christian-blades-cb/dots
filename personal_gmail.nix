@@ -8,5 +8,16 @@
     passwordCommand = "${pkgs.pass}/bin/pass gmail";
     primary = true;
     realName = "Christian Blades";
+    notmuch.enable = true;
+    lieer.enable = true;
+  };
+
+  programs = {
+    lieer = {
+      enable = true;
+    };
+    notmuch = {
+      enable = true;
+    };
   };
 }

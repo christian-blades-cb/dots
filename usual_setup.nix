@@ -82,6 +82,7 @@ in {
     bat.enable = true;
     jq.enable = true;
     texlive.enable = true;
+    gpg.enable = true;
   };
 
   home.packages = with pkgs; [
