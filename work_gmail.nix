@@ -14,6 +14,10 @@
 
   programs = {
     lieer.enable = true;
-    notmuch.enable = true;
+    notmuch = {
+      enable = true;
+      new.tags = [ "new" ];
+      search.excludeTags = [ "trash" "spam" ];
+    };
   };
 }

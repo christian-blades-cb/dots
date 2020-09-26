@@ -901,7 +901,20 @@
   :config
   (which-key-mode))
 
-(use-package notmuch :ensure t)
+(use-package notmuch
+  :ensure t
+  :config
+  (setq notmuch-search-oldest-first nil)
+  (setq notmuch-tagging-keys
+	'(("a" notmuch-archive-tags "Archive")
+	  ("u" notmuch-show-mark-read-tags "Mark read")
+	  ("f" ("+flagged") "Flag")
+	  ("s" ("+spam" "-inbox" "-new") "Spam")
+	  ("d" ("+deleted" "+trash" "-new") "Delete")))
+  (setq sendmail-program "gmi")
+  (setq message-sendmail-extra-arguments '("send" "--quiet" "-t" "-C" "~/Maildir/gmail"))
+  (setq notmuch-fcc-dirs nil)
+  )
 
 ;; (server-start)
 (put 'downcase-region 'disabled nil)

@@ -32,6 +32,7 @@ in {
       enable = true;
       shellAliases = {
         ll = "${pkgs.exa}/bin/exa -l";
+        lla = "${pkgs.exa}/bin/exa -la";
         l = "${pkgs.exa}/bin/exa";
       };
     };

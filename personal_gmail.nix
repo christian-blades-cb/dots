@@ -8,7 +8,9 @@
     passwordCommand = "${pkgs.pass}/bin/pass gmail";
     primary = true;
     realName = "Christian Blades";
-    notmuch.enable = true;
+    notmuch = {
+      enable = true;
+    };
     lieer.enable = true;
   };
 
@@ -18,6 +20,8 @@
     };
     notmuch = {
       enable = true;
+      new.tags = [ "new" ];
+      search.excludeTags = [ "trash" "spam" ];
     };
   };
 }
