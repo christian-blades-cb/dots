@@ -913,6 +913,7 @@
 	  ("d" ("+deleted" "+trash" "-new") "Delete")))
   (setq sendmail-program "gmi")
   (setq message-sendmail-extra-arguments '("send" "--quiet" "-t" "-C" "~/Maildir/gmail"))
+  (setq message-send-mail-function 'message-send-mail-with-sendmail)
   (setq notmuch-fcc-dirs nil)
   )
 
