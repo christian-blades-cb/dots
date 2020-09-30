@@ -79,6 +79,11 @@ in {
       ];
     };
 
+    zoxide = {
+      enable = true;
+      enableFishIntegration = true;
+    };
+
     alacritty.enable = true;
     bat.enable = true;
     jq.enable = true;
