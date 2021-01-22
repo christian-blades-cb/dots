@@ -73,7 +73,7 @@ in {
             set -g @dracula-ram-usage true
             set -g @dracula-show-network false
 
-            set-option -g default-shell ${pkgs.fish}/bin/fish
+            set -g default-command ${pkgs.fish}/bin/fish
           '';
         }
       ];
@@ -151,6 +151,10 @@ in {
         mixer_type            "software"
       }
     '';
+    linuxLogfile = "syslog";
+    darwinLogfile = "~/.config/mpd/mpg.log";
+    logFile = if pkgs.stdenv.isDarwin then darwinLogfile else linuxLogfile;
+
   in ''
     ${(pkgs.lib.optionalString pkgs.stdenv.isLinux linuxAudio)}
     ${(pkgs.lib.optionalString pkgs.stdenv.isDarwin darwinAudio)}
@@ -160,7 +164,7 @@ in {
     playlist_directory "~/.config/mpd/playlists"
     pid_file           "~/.config/mpd/mpd.pid"
     state_file         "~/.config/mpd/state"
-    log_file           "syslog"
+    log_file           "${logFile}"
     auto_update        "yes"
 
     bind_to_address    "127.0.0.1"
