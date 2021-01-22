@@ -72,16 +72,19 @@
 (use-package counsel
   :after ivy
   :ensure t
+  :demand
   :config (counsel-mode 1))
 
 (use-package ivy
+  :demand
   :ensure t
   :bind (("C-c C-r" . ivy-resume)
          ("C-x B" . ivy-switch-buffer-other-window))
   :custom
   (ivy-count-format "(%d/%d) ")
   (ivy-use-virtual-buffers t)
-  :config (ivy-mode 1))
+  :config
+  (ivy-mode 1))
 
 (use-package ivy-rich
   :after counsel
@@ -718,6 +721,7 @@
 (use-package weechat
   :ensure t
   :init
+  ;; some day maybe this PR will be merged https://github.com/the-kenny/weechat.el/pull/91
   (defvar weechat-formatting-regex
     (rx-let ((attr (in "*!/_|"))   ;NOTE:  is not documented
 	     (std  (= 2 digit))
