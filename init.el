@@ -717,9 +717,36 @@
 
 (use-package weechat
   :ensure t
+  :init
+  (defvar weechat-formatting-regex
+    (rx-let ((attr (in "*!/_|"))   ;NOTE:  is not documented
+	     (std  (= 2 digit))
+	     (astd (seq attr (= 2 digit)))
+	     (ext  (seq "@" (= 5 digit)))
+	     (aext (seq "@" attr (= 5 digit))))
+	    (rx
+	     (or (seq ""
+		      (or std
+			  ext
+			  (seq "F" (or std astd ext aext))
+			  (seq "B" (or std ext))
+			  (seq "*" (or std
+				       astd
+				       ext
+				       aext
+				       (seq (or std astd ext aext)
+					    ","
+					    (or std astd ext aext))))
+			  (seq "b" (in "-FDB#_il"))
+			  ""))
+		 (seq "" attr)
+		 (seq "" attr)
+		 ""))))
   :config
   (setq weechat-host-default "204.48.29.163")
-  (setq weechat-port-default 9090))
+  (setq weechat-port-default 9090)
+  (setq weechat-mode-default "ssl")
+  )
 
 (use-package emacsshot
   :ensure t
