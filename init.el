@@ -69,24 +69,62 @@
 (setq ring-bell-function 'ignore)
 (defalias 'yes-or-no-p 'y-or-n-p) ;; shorten yes/no prompts to y/n
 
-;; (use-package delight :ensure t)
-
-(use-package helm
+(use-package counsel
+  :after ivy
   :ensure t
-  :delight
+  :config (counsel-mode 1))
+
+(use-package ivy
+  :ensure t
+  :bind (("C-c C-r" . ivy-resume)
+         ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode 1))
+
+(use-package ivy-rich
+  :after counsel
+  :ensure t
+  :init
+  (setq ivy-rich-path-style 'abbrev
+	ivy-virtual-abbreviate 'full)
   :config
-  (require 'helm-config)
-  (helm-mode 1)
-  (global-set-key (kbd "M-x") 'helm-M-x)
-  (global-set-key (kbd "C-x C-f") 'helm-find-files)
-  (global-set-key (kbd "C-x b") 'helm-buffers-list)
-  (global-set-key (kbd "M-w") 'copy-region-as-kill)
-  (global-set-key (kbd "C-s") 'helm-occur)
-  (setq helm-mode-fuzzy-match t)
-  (setq helm-gtags-path-style (quote relative))
-  (setq helm-gtags-auto-update t)
-  (setq helm-gtags-ignore-case t)
+  (ivy-rich-mode 1)
   )
+
+(use-package swiper
+  :ensure t
+  :after ivy
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)))
+
+(use-package counsel-gtags
+  :ensure t
+  :after counsel
+  :bind (:map counsel-gtags-mode-map
+	      ("M-t" . counsel-gtags-find-definition)
+	      ("M-r" . counsel-gtags-find-reference)
+	      ("M-s" . counsel-gtags-find-symbol)
+	      ("M-," . counsel-gtags-go-backward))
+  :hook
+  (((c-mode c++-mode asm-mode python-mode) . counsel-gtags-mode)))
+
+(use-package counsel-jq
+  :ensure t
+  :after counsel
+  )
+
+(use-package counsel-projectile
+  :ensure t
+  :after (counsel projectile)
+  :config
+  (counsel-projectile-mode 1)
+  )
+
+(use-package ivy-avy
+  :ensure t
+  :after (ivy avy))
 
 (use-package projectile
   :ensure t
@@ -99,14 +137,6 @@
 (use-package projectile-ripgrep
   :ensure t
   :after (projectile))
-
-(use-package helm-projectile
-  :ensure t
-  :after (helm projectile)
-  :config
-  (helm-projectile-on)
-  (global-set-key (kbd "C-c p p") 'helm-projectile)
-  )
 
 (use-package python-mode
   :bind (:map python-mode-map
@@ -123,9 +153,6 @@
 
 (use-package flycheck
   :ensure t
-  :after helm
-  :bind (:map flycheck-mode-map
-	      ("C-c ! h" . helm-flycheck))
   :config
   (setq flycheck-flake8-error-level-alist
 	(quote (("^E9.*$" . error)
@@ -140,7 +167,6 @@
   (add-hook 'python-mode-hook 'flycheck-mode)
   (add-to-list 'flycheck-disabled-checkers 'python-flake8)
   (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-  ;; (define-key flycheck-mode-map (kbd "C-c ! h") 'helm-flycheck)
   )
 
 (use-package flycheck-mypy
@@ -148,26 +174,6 @@
   :ensure t
   :config
   (setq flycheck-python-mypy-args "--py2"))
-
-;; autocomplete
-(use-package auto-complete
-  :ensure t
-  :bind (:map ac-completing-map
-	 ("C-:" . ac-complete-with-helm)
-	 :map ac-complete-mode-map
-	 ("C-:" . ac-complete-with-helm)
-	 :map ac-mode-map
-	 ("C-:" . ac-complete-with-helm))
-  :config
-  (require 'auto-complete-config)
-  )
-
-(use-package ac-helm
-  :ensure t
-  :after (helm auto-complete)
-  :config
-  (global-set-key (kbd "C-:") 'ac-complete-with-helm)
-  (define-key ac-completing-map (kbd "C-:") 'ac-complete-with-helm))
 
 (global-set-key (kbd "<f10>") 'org-agenda)
 (global-set-key (kbd "<XF86Eject>") 'org-agenda)
@@ -272,13 +278,6 @@
   (setq flycheck-gometalinter-tests t)
   )
 
-(use-package helm-go-package
-  :ensure t
-  :after (helm go-mode)
-  :config
-  (eval-after-load 'go-mode
-    '(substitute-key-definition 'go-import-add 'helm-go-package go-mode-map)))
-
 (use-package go-eldoc
   :after go-mode
   :ensure t
@@ -288,15 +287,6 @@
 (use-package diminish :ensure t)
 (diminish 'eldoc-mode)
 (diminish 'auto-revert-mode)
-
-(use-package helm-company
-  :ensure t
-  :after (company helm)
-  :bind (:map company-mode-map
-	      ("C-:" . helm-company)
-	      :map company-active-map
-	      ("C-:" . helm-company)
-	      ))
 
 (use-package rust-mode
   :ensure t
@@ -571,20 +561,6 @@
 (global-set-key (kbd "C-c C-p") (lambda () (interactive) (next-line -20)))
 (global-set-key (kbd "C-c C-n") (lambda () (interactive) (next-line 20)))
 
-(use-package "helm-gtags"
-  :ensure t
-  :bind (:map helm-gtags-mode-map
-	      ("M-." . helm-gtags-dwim)
-	      ("M-t" . helm-gtags-find-tag)
-	      ("M-r" . helm-gtags-find-rtag)
-	      ("M-s" . helm-gtags-find-symbol)
-	      ("M-g M-p" . helm-gtags-parse-file)
-	      ("C-c <" . helm-gtags-previous-history)
-	      ("C-c >" . helm-gtags-next-history)
-	      ("M-," . helm-gtags-pop-stack))
-  :hook
-  (((c-mode c++-mode asm-mode python-mode) . helm-gtags-mode)))
-
 (use-package company-shell
   :ensure t
   :hook ((sh-mode . company-mode))
@@ -745,10 +721,6 @@
   (setq weechat-host-default "204.48.29.163")
   (setq weechat-port-default 9090))
 
-(use-package helm-rg
-  :after (helm)
-  :ensure t)
-
 (use-package emacsshot
   :ensure t
   :bind (("<XF86Launch6>" . 'emacsshot-snap-frame)
@@ -759,9 +731,6 @@
 (use-package org-present :ensure t)
 
 (use-package twittering-mode :ensure t)
-(use-package helm-lobsters
-  :after helm
-  :ensure t)
 
 (use-package pulseaudio-control :ensure t
   :config
