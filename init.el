@@ -116,13 +116,6 @@
   (add-hook 'python-mode-hook '(lambda () (setq fill-column 110)))
   )
 
-(use-package company-lsp
-  :ensure t
-  :after (company lsp-mode)
-  :config
-  (add-to-list 'company-backends 'company-lsp)
-  )
-
 ;; pip install 'python-language-server[all]'
 (when (executable-find "pyls")
   (add-hook 'python-mode-hook #'company-mode)
@@ -264,33 +257,6 @@
   :hook ((go-mode . go-guru-hl-identifier-mode))
   :config
   (setq go-guru-build-tags '("servicetest")))
-
-;; (setq cb/go-autocomplete-file (file-if-exists (substitute-in-file-name "$GOPATH/src/github.com/nsf/gocode/emacs/go-autocomplete.el")))
-
-;; (use-package go-autocomplete
-;;   :if cb/go-autocomplete-file
-;;   :after yasnippet
-;;   :init
-;;   (require 'go-autocomplete)
-;;   (require 'auto-complete-config)
-;;   :load-path (lambda () (file-name-directory cb/go-autocomplete-file))
-;;   :hook ((go-mode . auto-complete-mode)
-;;	 (go-mode . yas-minor-mode))
-;;   :config
-;;   (setq ac-go-expand-arguments-into-snippets t)
-;;   )
-
-(unless (executable-find "gocode") "Gocode not found, autocomplete not available in go-mode. Please run go get -u github.com/nsf/gocode")
-
-;; both this and the autocomplete one require gocode (go get -u github.com/nsf/gocode)
-(use-package company-go
-  :ensure t
-  :if (executable-find "gocode")
-  :after (company go-mode)
-  :hook ((go-mode . company-mode))
-  :config
-  (add-to-list 'company-backends 'company-go)
-  )
 
 (use-package go-scratch :ensure t :after go-mode)
 
@@ -450,8 +416,7 @@
 ;; docker
 (use-package dockerfile-mode
   :ensure t
-  :config
-  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+  :mode "Dockerfile\\'"
   )
 
 (defconst cb/fourspace-protobuf-style
@@ -678,6 +643,11 @@
 	("m" "TODO from mail" entry (file+headline "~/org/agenda.org" "Email")
 	 "* TODO %?\nref: %a")
 	))
+
+;; block templates
+(require 'org-tempo)
+(add-to-list 'org-modules 'org-tempo)
+
 
 ;; use minted for better source blocks in latex export
 (setq org-latex-listings 'minted
@@ -920,3 +890,7 @@
 ;; (server-start)
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
+
+(use-package avy
+  :ensure t
+  :bind (("C-z" . avy-goto-char)))

@@ -101,7 +101,7 @@ in {
     ripgrep
     exa
     dua
-    _1password
+    # _1password
     gibo
     gotop
     youtube-dl

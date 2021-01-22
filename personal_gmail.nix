@@ -11,7 +11,13 @@
     notmuch = {
       enable = true;
     };
-    lieer.enable = true;
+    lieer = {
+      enable = true;
+      sync = {
+        enable = false;
+        frequency = "*:0/15";
+      };
+    };
   };
 
   programs = {
@@ -24,4 +30,8 @@
       search.excludeTags = [ "trash" "spam" ];
     };
   };
+
+  # services = pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+  #   lieer.enable = true;
+  # };
 }
