@@ -73,6 +73,7 @@
   :after ivy
   :ensure t
   :demand
+  :bind ("C-x c i" . counsel-imenu)
   :config (counsel-mode 1))
 
 (use-package ivy
@@ -658,6 +659,8 @@
   :mode (("README\\.md\\'" . gfm-mode)
 	 ("\\.md\\'" . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)))
+
+(use-package edit-indirect :ensure t)
 
 (use-package groovy-mode
   :ensure t

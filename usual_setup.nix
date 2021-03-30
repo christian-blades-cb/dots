@@ -4,7 +4,7 @@ with pkgs.lib;
 let
   emacsPkg = if pkgs.stdenv.isDarwin then pkgs.emacsMacport else pkgs.emacs27;
   phpLanguageServer = import ./deps/php-language-server/default.nix { inherit pkgs; };
-  draculaTmux = pkgs.tmuxPlugins.mkDerivation {
+  draculaTmux = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "dracula";
     version = "unstable-2020-09-20";
     src = pkgs.fetchFromGitHub {
@@ -117,6 +117,7 @@ in {
 
     niv
     rustup
+    dhall
 
     w3m
     phpLanguageServer
