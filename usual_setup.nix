@@ -22,6 +22,7 @@ let
       sha256 = "1q6dwj9c8yipbqvydnrmc4kwsflrkix8i51nhn4n23k9sqa9wjz1";
     };
   in "${src}/dracula.yml";
+  draculaKitty = ./deps/kitty-dracula/Dracula.conf;
 in {
   services = optionalAttrs pkgs.stdenv.isLinux { lorri.enable = true; };
 
@@ -82,6 +83,19 @@ in {
     zoxide = {
       enable = true;
       enableFishIntegration = true;
+    };
+
+    kitty = {
+      enable = true;
+      font = {
+        package = pkgs.fira-code-symbols;
+        name = "Fira Code";
+        # types = "Fira Code";
+        # size = 12;
+      };
+      extraConfig = ''
+        include ${draculaKitty}
+      '';
     };
 
     alacritty.enable = true;
