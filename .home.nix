@@ -1,15 +1,15 @@
 { config, pkgs, ... }:
 
 let
-  dots = "/home/blades/dev/dotfiles";
+  dots = "/Users/cblades/dev/dotfiles";
 in {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "blades";
-  home.homeDirectory = "/home/blades";
+  # home.username = "cblades";
+  # home.homeDirectory = "/Users/blades";
 
   # This value determines the Home Manager release that your
   # configuration is compatible with. This helps avoid breakage

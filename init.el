@@ -150,6 +150,20 @@
   (add-hook 'python-mode-hook '(lambda () (setq fill-column 110)))
   )
 
+(use-package python-isort
+  :ensure t
+  :after python-mode
+  :hook
+  ((python-isort-on-save-mode . python-mode-hook))
+  )
+
+(use-package py-yapf
+  :ensure t
+  :after python-mode
+  :hook
+  ((py-yapf-enable-on-save . python-mode-hook))
+  )
+
 ;; pip install 'python-language-server[all]'
 (when (executable-find "pyls")
   (add-hook 'python-mode-hook #'company-mode)
@@ -328,6 +342,10 @@
   :ensure t
   :after (rust-mode))
 
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
 ;; rustup component add rls
 (use-package lsp-mode
   :ensure t
@@ -337,6 +355,7 @@
 	 (js-mode . lsp)
 	 (php-mode . lsp)
 	 (c++-mode . lsp)
+	 (go-mode . lsp-go-install-save-hooks)
 	 )
   :config
   ; (setq lsp-clients-go-imports-local-prefix "github.corporate.network")
@@ -801,7 +820,9 @@
 
 ;; javascript
 (use-package nodejs-repl :ensure t)
-(use-package purescript-mode :ensure t)
+(use-package purescript-mode
+  :ensure t
+  :hook ((purescript-mode . turn-on-purescript-indentation)))
 (use-package json-mode :ensure t)
 
 (use-package nix-mode :ensure t)
@@ -868,6 +889,8 @@
 (use-package dhall-mode
   :ensure t
   :mode "\\.dhall\\'"
+  :config
+  (setq dhall-use-header-line nil)
   )
 
 (use-package which-key :ensure t

@@ -36,6 +36,18 @@ in {
         lla = "${pkgs.exa}/bin/exa -la";
         l = "${pkgs.exa}/bin/exa";
       };
+      plugins = [
+        {
+          name = "google-cloud-sdk-fish-completion";
+          src =   pkgs.fetchFromGitHub {
+            owner = "lgathy";
+            repo = "google-cloud-sdk-fish-completion";
+            rev = "bc24b0bf7da2addca377d89feece4487ca0b1e9c";
+            sha256 = "03zzggi64fhk0yx705h8nbg3a02zch9y49cdvzgnmpi321vz71h4";
+            fetchSubmodules = true;
+          };
+        }
+      ];
     };
 
     emacs = {
@@ -51,12 +63,17 @@ in {
 
     direnv = {
       enable = true;
-      enableFishIntegration = true;
     };
 
     starship = {
       enable = true;
       enableFishIntegration = true;
+      settings = {
+        nix_shell.disabled = true;
+        gcloud.format = "on [$symbol$project]($style) ";
+        gcloud.symbol = "☁️";
+        nodejs.symbol = "⬢ ";
+      };
     };
 
     tmux = {
@@ -98,8 +115,22 @@ in {
       '';
     };
 
+    bat = {
+      enable = true;
+      themes = {
+        dracula = builtins.readFile (pkgs.fetchFromGitHub {
+          owner = "dracula";
+          repo = "sublime";
+          rev = "26c57ec282abcaa76e57e055f38432bd827ac34e";
+          sha256 = "019hfl4zbn4vm4154hh3bwk6hm7bdxbr1hdww83nabxwjn99ndhv";
+        } + "/Dracula.tmTheme");
+      };
+      config = {
+        theme = "Dracula";
+      };
+    };
+
     alacritty.enable = true;
-    bat.enable = true;
     jq.enable = true;
     texlive.enable = true;
     gpg.enable = true;
@@ -117,11 +148,12 @@ in {
     dua
     # _1password
     gibo
-    gotop
-    youtube-dl
-    mpd
+    bottom
+    # youtube-dl
+    # mpd
     mpc_cli
 
+    xz
     zstd
     gnutar
 
@@ -132,13 +164,16 @@ in {
     niv
     rustup
     dhall
+    dhall-json
+    dhall-lsp-server
 
     w3m
-    phpLanguageServer
+    # phpLanguageServer
     nodePackages.typescript-language-server
     global
     ctags
     clang-tools
+    python3Packages.yapf
   ] ++ optionals stdenv.isDarwin [ lorri reattach-to-user-namespace ]
   ++ optional stdenv.isLinux xsel;
 

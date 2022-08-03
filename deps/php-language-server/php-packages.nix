@@ -98,7 +98,7 @@ let
         name = "webmozart-assert-bafc69caeb4d49c39fd0779086c03a3738cbb389";
         src = fetchurl {
           url = https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389;
-          sha256 = "18jplwg4dsl86rqf1fvizbx84klmbvaq207a6i8gl97qxp20arlj";
+          sha256 = "0wd0si4c9r1256xj76vgk2slxpamd0wzam3dyyz0g8xgyra7201c";
         };
       };
     };
@@ -109,7 +109,7 @@ composerEnv.buildPackage {
   inherit packages devPackages noDev;
   name = "felixfbecker-language-server";
   src = ./.;
-  executable = true;
+  executable = false;
   symlinkDependencies = false;
   meta = {};
 }
