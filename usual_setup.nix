@@ -28,7 +28,25 @@ in {
 
   nixpkgs.config.allowUnfree = true;
 
+  # Install MacOS applications to the user environment if the targetPlatform is Darwin
+  home.file."Applications/home-manager".source = let
+    apps = pkgs.buildEnv {
+      name = "home-manager-applications";
+      paths = config.home.packages;
+      pathsToLink = "/Applications";
+    };
+  in mkIf pkgs.stdenv.targetPlatform.isDarwin "${apps}/Applications";
+
   programs = {
+    firefox = {
+      enable = true;
+      # package = pkgs.runCommand "firefox-0.0.0" { } "mkdir $out";
+      package = if pkgs.stdenv.isDarwin then pkgs.nur.repos.toonn.apps.firefox else pkgs.firefox;
+      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        ublock-origin
+      ];
+    };
+
     fish = {
       enable = true;
       shellAliases = {

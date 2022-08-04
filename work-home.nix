@@ -25,5 +25,6 @@
     ./work_gmail.nix
     ./work_git.nix
     ./usual_setup.nix
+    ./work_dev.nix
   ];
 }

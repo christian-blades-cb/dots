@@ -11,9 +11,12 @@
       url = "github:koekeishiya/yabai";
       flake = false;
     };
+    nur.url = "github:nix-community/NUR";
   };
 
   outputs = inputs@{ nixpkgs, home-manager, darwin, yabai-src, ... }: {
+    overlays.nur = inputs.nur.overlay;
+
     darwinConfigurations = {
       "macos-C02GQ06Z1PG3" = darwin.lib.darwinSystem {
         system = "x86_64-darwin";
@@ -25,6 +28,8 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.cblades = import ./work-home.nix;
+            nixpkgs.overlays = [ inputs.nur.overlay ];
+            nixpkgs.config.allowUnfree = true;
 
             users.users.cblades = {
               shell = nixpkgs.fish;
