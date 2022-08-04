@@ -10,10 +10,9 @@
 ;; make sure use-package is installed
 (require 'package)
 (setq package-archives
-      '(("org" . "http://orgmode.org/elpa/")
-       ("melpa" . "https://melpa.org/packages/")
-       ("gnu" . "https://elpa.gnu.org/packages/")
-       ))
+      '(("melpa" . "https://melpa.org/packages/")
+	("gnu" . "https://elpa.gnu.org/packages/"))
+       )
 
 (unless package-archive-contents
   (package-refresh-contents))
@@ -549,11 +548,6 @@
    (haskell-mode . flycheck-mode))
   )
 
-(use-package intero
-  :ensure t
-  :config
-  (add-hook 'haskell-mode-hook 'intero-mode))
-
 (use-package hl-todo
   :ensure t
   :config
@@ -869,7 +863,8 @@
   :ensure t
   :delight
   :config
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+  (setq undo-tree-auto-save-history nil))
 
 (use-package fish-mode :ensure t)
 

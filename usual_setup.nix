@@ -152,6 +152,13 @@ in {
     jq.enable = true;
     texlive.enable = true;
     gpg.enable = true;
+
+    pandoc = {
+      enable = true;
+      defaults = {
+        metadata.author = "Christian Blades";
+      };
+    };
   };
 
   home.packages = with pkgs; [
