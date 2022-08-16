@@ -12,10 +12,12 @@
       flake = false;
     };
     nur.url = "github:nix-community/NUR";
+    gke-gcloud.url = "github:christian-blades-cb/gke-gcloud-auth-plugin-nix";
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, darwin, yabai-src, ... }: {
+  outputs = inputs@{ nixpkgs, home-manager, darwin, yabai-src, ... }: rec {
     overlays.nur = inputs.nur.overlay;
+    overlays.gke-gcloud = inputs.gke-gcloud.overlays.default;
 
     darwinConfigurations = {
       "macos-C02GQ06Z1PG3" = darwin.lib.darwinSystem {
@@ -28,7 +30,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.cblades = import ./work-home.nix;
-            nixpkgs.overlays = [ inputs.nur.overlay ];
+            nixpkgs.overlays = nixpkgs.lib.attrValues overlays;
             nixpkgs.config.allowUnfree = true;
 
             users.users.cblades = {

@@ -283,16 +283,25 @@
 
 (use-package go-scratch :ensure t :after go-mode)
 
-(use-package flycheck-gometalinter
+;; (use-package flycheck-gometalinter
+;;   :ensure t
+;;   :after (go-mode flycheck)
+;;   :hook
+;;   ((flycheck-mode . flycheck-gometalinter-setup)
+;;    (go-mode . flycheck-mode))
+;;   :config
+;;   (setq flycheck-gometalinter-vendor t)
+;;   (setq flycheck-gometalinter-fast t)
+;;   (setq flycheck-gometalinter-tests t)
+;;   )
+
+(use-package flycheck-golangci-lint
   :ensure t
   :after (go-mode flycheck)
   :hook
-  ((flycheck-mode . flycheck-gometalinter-setup)
-   (go-mode . flycheck-mode))
-  :config
-  (setq flycheck-gometalinter-vendor t)
-  (setq flycheck-gometalinter-fast t)
-  (setq flycheck-gometalinter-tests t)
+  ((flycheck-mode . flycheck-golangci-lint-setup)
+   (go-mode . flycheck-mode)
+   )
   )
 
 (use-package go-eldoc

@@ -1,24 +1,56 @@
 { config, pkgs, ... }:
-{
+let
+  # netskope is a pain, playing whack-a-mole with a bunch of CLI's
+  wrappedGcloud = pkgs.symlinkJoin {
+    name = "google-cloud-sdk";
+    paths = [ pkgs.google-cloud-sdk ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/gcloud \
+        --set CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE '/Library/Application Support/Netskope/STAgent/download/nscacert.pem'
+    '';
+  };
+in {
   programs.go = {
     enable = true;
     goPrivate = [ "*.rsglab.com" ];
-    # packages = {
-    #   "golang.org/x/tools" = builtins.fetchGit {
-    #     url = "git@github.com:golang/tools.git";
-    #     ref = "v0.1.12";
-    #     rev = "b3b5c13b291f9653da6f31b95db100a2e26bd186";
-    #   };
-    # };
   };
 
   home.packages = with pkgs; [
     # gcloud cli
-    google-cloud-sdk
+    wrappedGcloud
 
     # standard golang tools
     gotools
     mockgen
     golangci-lint
+    pkgs.gke-gcloud-auth-plugin
   ];
+
+  # requires a manual step of copying this file to `config_default`
+  # gcloud hates immutable configs, so I might retire this thing in favor of the wrapper above
+  xdg.configFile."gcloud/configurations/config_example".source =
+    let
+      iniFormat = pkgs.formats.ini { };
+      iniFile = x: iniFormat.generate "config_default" x;
+      config.core = {
+        account = "christian.blades@mailchimp.com";
+        custom_ca_certs_file = "/Library/Application Support/Netskope/STAgent/download/nscacert.pem";
+        disable_usage_reporting = true;
+      };
+    in
+      iniFile config;
+
+  # making gcloud the auth provider for GCR
+  # equiv of `gcloud auth docker`,
+  home.file.".docker/config.json".source =
+    let
+      jsonFormat = pkgs.formats.json { };
+      jsonFile = x: jsonFormat.generate "config.json" x;
+      gcloudCredHelpers = hosts: builtins.listToAttrs
+        ( builtins.map (x: { name = x; value = "gcloud"; }) hosts);
+    in
+      jsonFile {
+        credHelpers = gcloudCredHelpers [ "gcr.io" "us.gcr.io" "eu.gcr.io" "asia.gcr.io" "staging-k8s.gcr.io" "marketplace.gcr.io" ];
+      };
 }
