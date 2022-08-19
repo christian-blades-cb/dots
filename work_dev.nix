@@ -52,6 +52,7 @@ in {
     in
       jsonFile {
         credHelpers = gcloudCredHelpers [ "gcr.io" "us.gcr.io" "eu.gcr.io" "asia.gcr.io" "staging-k8s.gcr.io" "marketplace.gcr.io" ];
-        credStore = "osxkeychain";
+        credsStore = "osxkeychain";
+        auths."dockerfactory.rsglab.com" = {};
       };
 }
