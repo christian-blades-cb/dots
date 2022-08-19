@@ -10,6 +10,7 @@
           user = "christian-blades-cb";
         };
         init.defaultBranch = "main";
+        credential.helper = "osxkeychain";
       };
     };
   };

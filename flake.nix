@@ -25,6 +25,7 @@
         specialArgs = { inherit yabai-src; };
         modules = [
           ./darwin-configuration.nix
+          ./work-darwin.nix
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
