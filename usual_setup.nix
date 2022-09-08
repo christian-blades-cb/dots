@@ -188,6 +188,7 @@ in {
 
     niv
     rustup
+    rust-analyzer-nightly
     dhall
     dhall-json
     dhall-lsp-server

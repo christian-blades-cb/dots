@@ -25,6 +25,20 @@ in {
     mockgen
     golangci-lint
     pkgs.gke-gcloud-auth-plugin
+
+    # php lsp
+    nodePackages.intelephense
+
+    # json lsp
+    nodePackages.vscode-json-languageserver-bin
+
+    # js lsp
+    nodePackages.typescript-language-server
+
+    # twirp
+    protobuf
+    protoc-gen-twirp
+    protoc-gen-twirp_php
   ];
 
   # requires a manual step of copying this file to `config_default`

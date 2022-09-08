@@ -13,11 +13,16 @@
     };
     nur.url = "github:nix-community/NUR";
     gke-gcloud.url = "github:christian-blades-cb/gke-gcloud-auth-plugin-nix";
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, home-manager, darwin, yabai-src, ... }: rec {
     overlays.nur = inputs.nur.overlay;
     overlays.gke-gcloud = inputs.gke-gcloud.overlays.default;
+    overlays.fenix = inputs.fenix.overlay;
 
     darwinConfigurations = {
       "macos-C02GQ06Z1PG3" = darwin.lib.darwinSystem {
