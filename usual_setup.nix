@@ -2,7 +2,7 @@
 
 with pkgs.lib;
 let
-  emacsPkg = if pkgs.stdenv.isDarwin then pkgs.emacsMacport else pkgs.emacs27;
+  emacsPkg = if pkgs.stdenv.isDarwin then pkgs.emacsMacport else pkgs.emacs28;
   phpLanguageServer = import ./deps/php-language-server/default.nix { inherit pkgs; };
   draculaTmux = pkgs.tmuxPlugins.mkTmuxPlugin {
     pluginName = "dracula";
@@ -199,8 +199,17 @@ in {
     ctags
     clang-tools
     python3Packages.yapf
+
+    (aspellWithDicts (p: with p; [en en-computers en-science]))
   ] ++ optionals stdenv.isDarwin [ lorri reattach-to-user-namespace ]
   ++ optional stdenv.isLinux xsel;
+
+  # aspell dicts
+  home.file.".aspell.conf".text = ''
+    master en_US
+    extra-dicts en-computers.rws
+    add-extra-dicts en_US-science.rws
+  '';
 
   home.file = {
     ".emacs.d/init.el".source = ./init.el;
