@@ -17,12 +17,18 @@
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ghz.url = "github:christian-blades-cb/ghz-flake";
+    govuln.url = "github:christian-blades-cb/govulncheck-flake";
   };
 
   outputs = inputs@{ nixpkgs, home-manager, darwin, yabai-src, ... }: rec {
-    overlays.nur = inputs.nur.overlay;
-    overlays.gke-gcloud = inputs.gke-gcloud.overlays.default;
-    overlays.fenix = inputs.fenix.overlay;
+    overlays = {
+      nur = inputs.nur.overlay;
+      gke-gcloud = inputs.gke-gcloud.overlays.default;
+      fenix = inputs.fenix.overlay;
+      govuln = inputs.govuln.overlay;
+      ghz = inputs.ghz.overlay;
+    };
 
     darwinConfigurations = {
       "macos-C02GQ06Z1PG3" = darwin.lib.darwinSystem {

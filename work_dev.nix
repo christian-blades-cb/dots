@@ -24,7 +24,9 @@ in {
     gotools
     mockgen
     golangci-lint
-    pkgs.gke-gcloud-auth-plugin
+    gke-gcloud-auth-plugin
+    govulncheck
+    ghz
 
     # php lsp
     nodePackages.intelephense
