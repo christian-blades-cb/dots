@@ -304,11 +304,11 @@
    )
   )
 
-(use-package go-eldoc
-  :after go-mode
-  :ensure t
-  :hook ((go-mode . go-eldoc-setup))
-  )
+;; (use-package go-eldoc
+;;   :after go-mode
+;;   :ensure t
+;;   :hook ((go-mode . go-eldoc-setup))
+;;   )
 
 (use-package diminish :ensure t)
 (diminish 'eldoc-mode)

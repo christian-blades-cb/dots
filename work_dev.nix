@@ -39,6 +39,9 @@ in {
     protobuf
     protoc-gen-twirp
     protoc-gen-twirp_php
+
+    # golang lsp
+    gopls
   ];
 
   # requires a manual step of copying this file to `config_default`
