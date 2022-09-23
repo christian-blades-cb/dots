@@ -37,6 +37,9 @@ in {
     # js lsp
     nodePackages.typescript-language-server
 
+    # python lsp
+    (python3Packages.python-lsp-server.overridePythonAttrs (_: { doCheck = false; }))
+
     # twirp
     protobuf
     protoc-gen-twirp
