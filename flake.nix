@@ -13,12 +13,15 @@
     };
     nur.url = "github:nix-community/NUR";
     gke-gcloud.url = "github:christian-blades-cb/gke-gcloud-auth-plugin-nix";
+    gke-gcloud.inputs.nixpkgs.follows = "nixpkgs";
     fenix = {
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ghz.url = "github:christian-blades-cb/ghz-flake";
+    ghz.inputs.nixpkgs.follows = "nixpkgs";
     govuln.url = "github:christian-blades-cb/govulncheck-flake";
+    govuln.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs@{ nixpkgs, home-manager, darwin, yabai-src, ... }: rec {
