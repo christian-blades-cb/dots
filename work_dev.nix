@@ -38,7 +38,7 @@ in {
     nodePackages.typescript-language-server
 
     # python lsp
-    (python3Packages.python-lsp-server.overridePythonAttrs (_: { doCheck = false; }))
+    python3Packages.python-lsp-server
 
     # twirp
     protobuf
