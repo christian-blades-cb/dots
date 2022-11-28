@@ -44,6 +44,7 @@ in {
     protobuf
     protoc-gen-twirp
     protoc-gen-twirp_php
+    buf
 
     # golang lsp
     gopls

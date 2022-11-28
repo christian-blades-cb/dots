@@ -9,6 +9,7 @@
       brew "rsg/tap/pando-cli"
       brew "rsg/tap/twurl"
       brew "rsg/tap/dsf-cli"
+      brew "rsg/tap/gcp-provision"
     '';
   };
 }
