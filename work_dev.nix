@@ -10,6 +10,10 @@ let
         --set CLOUDSDK_CORE_CUSTOM_CA_CERTS_FILE '/Library/Application Support/Netskope/STAgent/download/nscacert.pem'
     '';
   };
+  colimaStartScript = pkgs.writeShellScriptBin "colima-start" ''
+    # trick colima into finishing the setup, we already have the context set ourselves
+    DOCKER_CONFIG=$(mktemp -d) colima start
+  '';
 in {
   programs.go = {
     enable = true;
@@ -52,6 +56,7 @@ in {
     # not docker desktop
     colima
     docker
+    colimaStartScript
   ];
 
   # requires a manual step of copying this file to `config_default`
@@ -84,4 +89,20 @@ in {
         auths."dockerfactory.rsglab.com" = {};
         currentContext = "colima";
       };
+
+  # make our own colima docker context
+  home.file.".docker/contexts/meta/f24fd3749c1368328e2b149bec149cb6795619f244c5b584e844961215dadd16/meta.json".source =
+    let
+      jsonFormat = pkgs.formats.json {};
+      jsonFile = x: jsonFormat.generate "meta.json" x;
+      meta = {
+        Name = "colima";
+        Metadata.Description = "colima";
+        Endpoints.docker = {
+          Host = "unix:///Users/cblades/.colima/default/docker.sock";
+          SkipTLSVerify = false;
+        };
+      };
+    in
+      jsonFile meta;
 }
