@@ -639,9 +639,6 @@
 	 "* TODO %?\n  %i\n  %a")
 	("j" "Journal" entry (file+datetree "~/org/journal.org")
 	 "* %?\nEntered on %U\n  %i\n  %a")
-	("J" "Jenkins" entry (file+datetree "~/org/jenkins_shenanigans.org")
-	 "* Today, Jenkins %? :jenkins:\n  %t\n  %i\n"
-	 )
 	("m" "TODO from mail" entry (file+headline "~/org/agenda.org" "Email")
 	 "* TODO %?\nref: %a")
 	))
