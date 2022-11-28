@@ -48,6 +48,10 @@ in {
 
     # golang lsp
     gopls
+
+    # not docker desktop
+    colima
+    docker
   ];
 
   # requires a manual step of copying this file to `config_default`
@@ -61,6 +65,7 @@ in {
         custom_ca_certs_file = "/Library/Application Support/Netskope/STAgent/download/nscacert.pem";
         disable_usage_reporting = true;
       };
+      config.auth.disable_ssl_validation = true;
     in
       iniFile config;
 
@@ -77,5 +82,6 @@ in {
         credHelpers = gcloudCredHelpers [ "gcr.io" "us.gcr.io" "eu.gcr.io" "asia.gcr.io" "staging-k8s.gcr.io" "marketplace.gcr.io" ];
         credsStore = "osxkeychain";
         auths."dockerfactory.rsglab.com" = {};
+        currentContext = "colima";
       };
 }
