@@ -13,7 +13,7 @@ let
 in {
   programs.go = {
     enable = true;
-    goPrivate = [ "*.rsglab.com" ];
+    goPrivate = [ "*.rsglab.com" "github.intuit.com" ];
   };
 
   home.packages = with pkgs; [
