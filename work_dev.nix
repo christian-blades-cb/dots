@@ -32,6 +32,11 @@ in {
     govulncheck
     ghz
 
+    # python tooling
+    python3Packages.keyring
+    python3Packages.keyrings-google-artifactregistry-auth
+    # python3Packages.pip
+
     # php lsp
     nodePackages.intelephense
 
@@ -44,14 +49,14 @@ in {
     # python lsp
     python3Packages.python-lsp-server
 
+    # golang lsp
+    gopls
+
     # twirp
     protobuf
     protoc-gen-twirp
     protoc-gen-twirp_php
     buf
-
-    # golang lsp
-    gopls
 
     # not docker desktop
     colima
@@ -105,4 +110,31 @@ in {
       };
     in
       jsonFile meta;
+
+  #######################################################
+  # pip/pypi config                                     #
+  #                                                     #
+  # NOTE:                                               #
+  #   use keyring for credential storage                #
+  #     `keyring set artifactory.rsglab.com <USERNAME>` #
+  #     provide your artifactory API key                #
+  #######################################################
+
+  xdg.configFile."pip/pip.conf".source =
+    let
+      iniFormat = pkgs.formats.ini { };
+      iniFile = x: iniFormat.generate "pip.conf" x;
+      conf.global.index-url = "https://artifactory.rsglab.com/artifactory/api/pypi/pypi/simple";
+    in
+      iniFile conf;
+
+  home.file.".pypirc".source =
+    let
+      # lists are formatted as multi-line values
+      iniFormat = with pkgs.lib; pkgs.formats.ini { listToValue = concatMapStringsSep "\n" (generators.mkValueStringDefault {}); };
+      iniFile = x: iniFormat.generate "pip.conf" x;
+      conf.distutils.index-servers = [ "rsg" ];
+      conf.rsg.repository = "https://artifactory.rsglab.com/artifactory/api/pypi/pypi-local";
+    in
+      iniFile conf;
 }
