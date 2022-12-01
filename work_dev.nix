@@ -96,7 +96,7 @@ in {
       };
 
   # make our own colima docker context
-  home.file.".docker/contexts/meta/f24fd3749c1368328e2b149bec149cb6795619f244c5b584e844961215dadd16/meta.json".source =
+  home.file.".docker/contexts/meta/${builtins.hashString "sha256" "colima"}/meta.json".source =
     let
       jsonFormat = pkgs.formats.json {};
       jsonFile = x: jsonFormat.generate "meta.json" x;
