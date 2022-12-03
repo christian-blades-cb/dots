@@ -84,8 +84,8 @@
 
               targets.genericLinux.enable = true;
 
-              home.username = "cblades";
-              home.homeDirectory = "/Users/blades";              
+              home.username = "blades";
+              home.homeDirectory = "/home/blades";
             }
             ./parkour.nix
             ./usual_setup.nix
