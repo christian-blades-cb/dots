@@ -26,5 +26,6 @@
     ./work_git.nix
     ./usual_setup.nix
     ./work_dev.nix
+    ./darwin-app-fix.nix
   ];
 }
