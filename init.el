@@ -79,7 +79,7 @@
   :demand
   :ensure t
   :bind (("C-c C-r" . ivy-resume)
-         ("C-x B" . ivy-switch-buffer-other-window))
+	 ("C-x B" . ivy-switch-buffer-other-window))
   :custom
   (ivy-count-format "(%d/%d) ")
   (ivy-use-virtual-buffers t)
@@ -100,7 +100,7 @@
   :ensure t
   :after ivy
   :bind (("C-s" . swiper)
-         ("C-r" . swiper)))
+	 ("C-r" . swiper)))
 
 (use-package counsel-gtags
   :ensure t
@@ -283,18 +283,6 @@
 
 (use-package go-scratch :ensure t :after go-mode)
 
-;; (use-package flycheck-gometalinter
-;;   :ensure t
-;;   :after (go-mode flycheck)
-;;   :hook
-;;   ((flycheck-mode . flycheck-gometalinter-setup)
-;;    (go-mode . flycheck-mode))
-;;   :config
-;;   (setq flycheck-gometalinter-vendor t)
-;;   (setq flycheck-gometalinter-fast t)
-;;   (setq flycheck-gometalinter-tests t)
-;;   )
-
 (use-package flycheck-golangci-lint
   :ensure t
   :after (go-mode flycheck)
@@ -473,6 +461,11 @@
 
 
 ;; magit
+;;
+;; NOTE: if this complains about missing emacsql-sqlite under nixos
+;;
+;; cd ~/.emacs.d/elpa/emacsql-sqlite-*/sqlite
+;; nix-shell -p stdenv --run "make"
 (use-package magit :ensure t)
 
 ;; create a personal access token https://github.corporate.network/settings/tokens
@@ -703,7 +696,7 @@
   (setq emms-player-mpd-server-port "6600")
   (setq mpc-host "localhost:6600")
   (emms-player-set emms-player-mpd 'regex
-                 "\\.ogg\\|\\.mp3\\|\\.wma\\|\\.ogm\\|\\.asf\\|\\.mkv\\|http://\\|mms://\\|\\.rmvb\\|\\.flac\\|\\.vob\\|\\.m4a\\|\\.ape\\|\\.mpc\\|\\.opus")
+		 "\\.ogg\\|\\.mp3\\|\\.wma\\|\\.ogm\\|\\.asf\\|\\.mkv\\|http://\\|mms://\\|\\.rmvb\\|\\.flac\\|\\.vob\\|\\.m4a\\|\\.ape\\|\\.mpc\\|\\.opus")
   )
 
 (use-package fic-mode

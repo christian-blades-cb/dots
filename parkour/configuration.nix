@@ -54,6 +54,11 @@
   services.xserver = {
     layout = "us";
     xkbVariant = "";
+
+    # if you change this, after `nixos-rebuild switch` do:
+    #   gsettings reset org.gnome.desktop.input-sources xkb-options
+    #   gsettings reset org.gnome.desktop.input-sources sources
+    # (https://unix.stackexchange.com/questions/377600/in-nixos-how-to-remap-caps-lock-to-control)
     xkbOptions = "ctrl:swapcaps";
   };
 
@@ -89,6 +94,7 @@
       firefox
     #  thunderbird
     ];
+    shell = pkgs.fish;
   };
 
   # Allow unfree packages
