@@ -25,9 +25,10 @@
     govuln.inputs.nixpkgs.follows = "nixpkgs";
     nixgl.url = "github:guibou/nixGL";
     nixgl.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-hardware.url = "github:nixos/nixos-hardware";
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, darwin, yabai-src, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, ... }: rec {
     overlays = {
       nur = inputs.nur.overlay;
       gke-gcloud = inputs.gke-gcloud.overlays.default;
@@ -77,7 +78,6 @@
           modules = [
             {
               nixpkgs.config.allowUnfree = true;
-              nix.package = pkgs.nixFlakes;
               nix.settings.experimental-features = [ "nix-command" "flakes" ];
               nixpkgs.overlays = (nixpkgs.lib.attrValues overlays) ++ [ inputs.nixgl.overlay ];
 
@@ -97,6 +97,46 @@
             ./personal_gmail.nix
           ];
         };
+	
     };
+
+
+	  nixosConfigurations = {
+	    parkour = nixpkgs.lib.nixosSystem {
+	      system = "x86_64-linux";
+	      modules = [
+	        ./parkour/configuration.nix
+          nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
+	        {
+            nixpkgs.config.allowUnfree = true;
+            nix.settings.experimental-features = [ "nix-command" "flakes" ];
+            nixpkgs.overlays = (nixpkgs.lib.attrValues overlays) ++ [ inputs.nixgl.overlay ];
+          }
+	        home-manager.nixosModules.home-manager
+	        {
+	          home-manager.useGlobalPkgs = true;
+	          home-manager.useUserPackages = true;
+	          home-manager.users.blades = (
+		          { config, pkgs, ... }:
+		          {
+                home.stateVersion = "20.09";
+                
+                targets.genericLinux.enable = true;
+                
+		            imports = [
+            	    ./parkour.nix
+            	    ./usual_setup.nix
+            	    ./personal.nix
+            	    ./personal_git.nix
+            	    ./personal_gmail.nix
+		            ];
+		          }
+		        );	        
+	        }
+	      ];
+	    };
+	  };
+
+	  packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
   };
 }

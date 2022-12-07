@@ -177,6 +177,7 @@ in {
     # youtube-dl
     # mpd
     mpc_cli
+    sqlite
 
     xz
     zstd
