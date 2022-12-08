@@ -117,6 +117,10 @@
 
   # List services that you want to enable:
 
+  # fingerprint reader
+  services.fprintd.enable = true;
+  # enroll fingerprints with `fprintd-enroll <USER>`
+
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
