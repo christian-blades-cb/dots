@@ -595,7 +595,7 @@
 
 ;; org-mode
 (use-package org
-  :ensure org-plus-contrib
+  :ensure t
   :config
   (setq org-src-preserve-indentation nil)
   (setq org-src-tab-acts-natively t)
@@ -703,12 +703,6 @@
   :ensure t
   :config
   (add-hook 'prog-mode-hook 'fic-mode))
-
-(use-package git-link
-  ;; :config
-  ;; (add-to-list 'git-link-remote-alist '("github.corporate.network" git-link-github))
-  ;; (add-to-list 'git-link-commit-remote-alist '("github.corporate.network" git-link-commit-github))
-  )
 
 (use-package ox-gfm :ensure t)
 
