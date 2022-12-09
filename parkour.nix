@@ -11,9 +11,11 @@ let
   #   };
   # in import "${src}/default.nix" { };
 in {
-  home.packages = with pkgs.nixgl; [
-    nixGLIntel
+  home.packages = with pkgs; [
+    nixgl.nixGLIntel
     # nixGLNvidiaBumblebee
-    pkgs.makemkv # registration key: T-2KF3Fsx1NkAkuKtr3o47Fv4Bf4YoFgqnxEPqm9sTPIT1Ya70CTlIcRXbSPPzHIDq7z
+    makemkv # registration key: T-2KF3Fsx1NkAkuKtr3o47Fv4Bf4YoFgqnxEPqm9sTPIT1Ya70CTlIcRXbSPPzHIDq7z
+    _1password
+    _1password-gui
   ];
 }

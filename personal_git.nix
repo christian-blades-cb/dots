@@ -7,6 +7,7 @@
       userEmail = builtins.concatStringsSep "@" [ "christian.blades+github" "gmail.com" ];
       extraConfig = {
         github.user = "christian-blades-cb";
+        init.defaultBranch = "main";
       };
     };
   };
