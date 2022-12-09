@@ -14,5 +14,6 @@ in {
   home.packages = with pkgs.nixgl; [
     nixGLIntel
     # nixGLNvidiaBumblebee
+    pkgs.makemkv # registration key: T-2KF3Fsx1NkAkuKtr3o47Fv4Bf4YoFgqnxEPqm9sTPIT1Ya70CTlIcRXbSPPzHIDq7z
   ];
 }
