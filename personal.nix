@@ -8,13 +8,15 @@
     _1password-gui
   ];
 
+  services.caffeine.enable = true;
+
   programs.firefox = {
     enable = true;
     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
       ublock-origin
       onepassword-password-manager
     ];
-    profiles.blades = 
+    profiles.blades =
       {
         id = 0;
         bookmarks = [
@@ -37,6 +39,6 @@
           }
         ];
       };
-    
+
   };
 }
