@@ -6,6 +6,13 @@
     # makemkv # registration key: T-2KF3Fsx1NkAkuKtr3o47Fv4Bf4YoFgqnxEPqm9sTPIT1Ya70CTlIcRXbSPPzHIDq7z
     _1password
     _1password-gui
+
+    yt-dlp
+    ffmpeg
+
+    sshfs
+
+    wireguard-tools
   ];
 
   services.caffeine.enable = true;
