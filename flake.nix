@@ -97,46 +97,58 @@
             ./personal_gmail.nix
           ];
         };
-	
+
     };
 
 
-	  nixosConfigurations = {
-	    parkour = nixpkgs.lib.nixosSystem {
-	      system = "x86_64-linux";
-	      modules = [
-	        ./parkour/configuration.nix
+    nixosConfigurations = {
+      parkour = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./parkour/configuration.nix
           nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
-	        {
+          {
             nixpkgs.config.allowUnfree = true;
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
             nixpkgs.overlays = (nixpkgs.lib.attrValues overlays) ++ [ inputs.nixgl.overlay ];
           }
-	        home-manager.nixosModules.home-manager
-	        {
-	          home-manager.useGlobalPkgs = true;
-	          home-manager.useUserPackages = true;
-	          home-manager.users.blades = (
-		          { config, pkgs, ... }:
-		          {
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.blades = (
+              { config, pkgs, ... }:
+              {
                 home.stateVersion = "20.09";
-                
-                targets.genericLinux.enable = true;
-                
-		            imports = [
-            	    ./parkour.nix
-            	    ./usual_setup.nix
-            	    ./personal.nix
-            	    ./personal_git.nix
-            	    ./personal_gmail.nix
-		            ];
-		          }
-		        );	        
-	        }
-	      ];
-	    };
-	  };
 
-	  packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
+                targets.genericLinux.enable = true;
+
+                imports = [
+                  ./parkour.nix
+                  ./usual_setup.nix
+                  ./personal.nix
+                  ./personal_git.nix
+                  ./personal_gmail.nix
+                ];
+              }
+            );
+          }
+        ];
+      };
+
+      inchhigh = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./inchhigh/configuration.nix
+          {
+            nixpkgs.config.allowUnfree = true;
+            nix.settings.experimental-features = [ "nix-command" "flakes" ];
+            # nixpkgs.overlays = (nixpkgs.lib.attrValues overlays);
+          }
+        ];
+      };
+    };
+
+    packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
   };
 }
