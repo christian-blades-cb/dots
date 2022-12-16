@@ -106,6 +106,7 @@
         system = "x86_64-linux";
         modules = [
           ./parkour/configuration.nix
+          ./tailscale.nix
           nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
           {
             nixpkgs.config.allowUnfree = true;
@@ -140,6 +141,7 @@
         system = "x86_64-linux";
         modules = [
           ./inchhigh/configuration.nix
+          ./tailscale.nix
           {
             nixpkgs.config.allowUnfree = true;
             nix.settings.experimental-features = [ "nix-command" "flakes" ];

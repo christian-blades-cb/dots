@@ -5,6 +5,9 @@
 { config, pkgs, ... }:
 
 {
+  # remote nixos-rebuild without root
+  nix.settings.trusted-users = [ "root" "blades" ];
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -82,6 +85,10 @@
           publicKey = "GNifz2Nk9bJtomDuj6lpn8yjtsmRIBzx0h4PhY7k92o=";
           allowedIPs = [ "10.100.0.3/32" ];
         }
+        { # christian's iphone
+          publicKey = "Lquc1mahttAGgZrv1Mn2AZHnMjgiF28JhtRNVq/OWQg=";
+          allowedIPs = [ "10.100.0.4/32" ];
+        }
       ];
     };
   };
@@ -113,7 +120,9 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  # environment.systemPackages = with pkgs; [
+  environment.systemPackages = with pkgs; [
+    git
+  ];
   #   wget vim
   #   firefox
   # ];
