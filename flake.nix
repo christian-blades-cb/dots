@@ -106,6 +106,7 @@
         system = "x86_64-linux";
         modules = [
           ./parkour/configuration.nix
+          ./parkour/thinkpad_fan.nix
           ./tailscale.nix
           nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
           {

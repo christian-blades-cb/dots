@@ -166,6 +166,8 @@ in {
     fira-code
     fira-code-symbols
 
+    dig
+    binutils
     fd
     xsv
     ripgrep
