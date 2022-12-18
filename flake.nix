@@ -142,6 +142,7 @@
         system = "x86_64-linux";
         modules = [
           ./inchhigh/configuration.nix
+          ./inchhigh/hardware-configuration.nix
           ./tailscale.nix
           {
             nixpkgs.config.allowUnfree = true;
@@ -150,6 +151,45 @@
           }
         ];
       };
+
+      inchhigh-cdimage = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./inchhigh/configuration.nix
+          ./inchhigh/hardware-configuration.nix
+          "${nixpkgs}/nixos/modules/installer/iso-image.nix"
+          ./tailscale.nix
+          {
+            nixpkgs.config.allowUnfree = true;
+            nix.settings.experimental-features = [ "nix-command" "flakes" ];
+            # nixpkgs.overlays = (nixpkgs.lib.attrValues overlays);
+          }
+        ];
+      };
+
+      relay = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./relay/configuration.nix
+          ./relay/znc.nix
+          ./tailscale.nix
+          "${nixpkgs}/nixos/modules/virtualisation/digital-ocean-image.nix"
+          { swapDevices = [ { device = "/var/lib/swapfile"; size = 2 * 1024; } ]; }
+        ];
+      };
+
+      relay-container = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./relay/configuration.nix
+          ./relay/znc.nix
+          # ./tailscale.nix
+          # "${nixpkgs}/nixos/modules/virtualisation/digital-ocean-image.nix"
+          # { swapDevices = [ { device = "/var/lib/swapfile"; size = 2 * 1024; } ]; }
+          { boot.isContainer = true; networking.firewall.allowedTCPPorts = [ 5000 ]; }
+        ];
+      };
+      
     };
 
     packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
