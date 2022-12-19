@@ -13,6 +13,8 @@
     sshfs
 
     wireguard-tools
+
+    weechat
   ];
 
   services.caffeine.enable = true;
