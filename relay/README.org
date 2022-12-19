@@ -1,0 +1,21 @@
+* relay
+
+A ZNC droplet
+
+** Building
+
+From the repo root:
+
+~nix build .#nixosConfigurations.relay.config.system.build.digitalOceanImage~
+
+** Deploying
+
+Upload the tarball under `result` to digitalocean (under Images > Custom Images). Pro tip: NYC1 has those $4 droplets available.
+
+Wait for the image to be "ready". It takes ~5 minutes. Once it's ready you can deploy it. Once deployed, you can delete the custom image so you don't continue paying for its storage.
+
+~ssh~ into the thing and run `tailscale up`, then adopt it at the tailscale link.
+
+Connect to znc via the tailscale machine name (~relay~ unless you changed it).
+
+Several of the modules we configured declaratively won't have loaded because reasons. If you intend to use palaver, make sure you at least ~/msg *status loadmod palaver~.
