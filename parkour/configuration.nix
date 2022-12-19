@@ -24,6 +24,12 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
+  # hibernate after sleeping for a while
+  systemd.sleep.extraConfig = ''
+    HibernateDelaySec=1h
+  '';
+  services.logind.lidSwitch = "suspend-then-hibernate";
+
   # Enable networking
   networking.networkmanager.enable = true;
 
