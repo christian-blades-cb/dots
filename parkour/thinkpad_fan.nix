@@ -23,9 +23,10 @@
         {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp3_input";}
         {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp1_input";}
         {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp2_input";}
-        {type = "hwmon"; query = "/sys/devices/virtual/thermal/thermal_zone10/hwmon6/temp1_input";}
-        {type = "hwmon"; query = "/sys/devices/virtual/thermal/thermal_zone19/hwmon10/temp1_input";}
-        {type = "hwmon"; query = "/sys/devices/virtual/thermal/thermal_zone1/hwmon3/temp1_input";}
+        # NOTE: these seem to change zone number every boot???
+        # {type = "hwmon"; query = "/sys/devices/virtual/thermal/thermal_zone10/hwmon6/temp1_input";}
+        # {type = "hwmon"; query = "/sys/devices/virtual/thermal/thermal_zone19/hwmon10/temp1_input";}
+        # {type = "hwmon"; query = "/sys/devices/virtual/thermal/thermal_zone1/hwmon3/temp1_input";}
       ];
 
       levels = [
