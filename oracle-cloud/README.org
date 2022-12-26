@@ -1,0 +1,5 @@
+* Oracle Cloud module
+
+Until https://github.com/NixOS/nixpkgs/pull/119856 is merged, have to maintain this thing.
+
+Almost a copy-paste, just changed some relative paths to be relative to ~modulesPath~.

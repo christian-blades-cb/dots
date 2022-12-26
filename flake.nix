@@ -189,6 +189,23 @@
           { boot.isContainer = true; networking.firewall.allowedTCPPorts = [ 5000 ]; }
         ];
       };
+
+      # nix build .#nixosConfigurations.itg-mastodon-oracle-arm.config.system.build.OCIImage
+      itg-mastodon-oracle-arm = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        modules = [
+          ./oracle-cloud/oci-options.nix
+          ./user-blades.nix
+          ./itg-mastodon/configuration.nix
+          ./oracle-cloud/oci-image.nix
+          ./tailscale.nix
+          {
+            services.openssh.enable = true;
+            nix.settings.trusted-users = [ "blades" ];
+            security.sudo.wheelNeedsPassword = false;
+          }
+        ];
+      };
       
     };
 

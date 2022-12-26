@@ -108,6 +108,9 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # allow building aarch64 images with qemu
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
