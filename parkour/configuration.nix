@@ -93,11 +93,14 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+
+  virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd.qemu.ovmf.packages = [ pkgs.OVMFFull.fd pkgs.pkgsCross.aarch64-multiplatform.OVMF.fd ];
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.blades = {
     isNormalUser = true;
     description = "Christian Blades";
-    extraGroups = [ "networkmanager" "wheel" "cdrom" ];
+    extraGroups = [ "networkmanager" "wheel" "cdrom" "kvm" "libvirt" ];
     packages = with pkgs; [
       firefox
     #  thunderbird

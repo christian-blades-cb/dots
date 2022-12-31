@@ -199,11 +199,16 @@
           ./itg-mastodon/configuration.nix
           ./oracle-cloud/oci-image.nix
           ./tailscale.nix
-          {
+          ({ pkgs, ... }: {
             services.openssh.enable = true;
             nix.settings.trusted-users = [ "blades" ];
             security.sudo.wheelNeedsPassword = false;
-          }
+            users.users.blades.packages = let
+              tootctlScript = pkgs.writeShellScriptBin "tootctl" ''
+                sudo su -s ${pkgs.bash}/bin/bash -l -c "mastodon-env tootctl $*" - mastodon
+              '';
+            in [ tootctlScript ];
+          })
         ];
       };
       

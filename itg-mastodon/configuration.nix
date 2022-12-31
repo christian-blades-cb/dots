@@ -18,53 +18,58 @@
 
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
-  services.caddy = {
+  services.postgresqlBackup = {
     enable = true;
-    virtualHosts = {
-
-      # Don't forget to change the host!
-      "interestingtimes.club" = {
-        extraConfig = ''
-          handle_path /system/* {
-              file_server * {
-                  root /var/lib/mastodon/public-system
-              }
-          }
-
-          handle /api/v1/streaming/* {
-              reverse_proxy  unix//run/mastodon-streaming/streaming.socket
-          }
-
-          route * {
-              file_server * {
-              root ${pkgs.mastodon}/public<your-server-host>
-              pass_thru
-              }
-              reverse_proxy * unix//run/mastodon-web/web.socket
-          }
-
-          handle_errors {
-              root * ${pkgs.mastodon}/public
-              rewrite 500.html
-              file_server
-          }
-
-          encode gzip
-
-          header /* {
-              Strict-Transport-Security "max-age=31536000;"
-          }
-          header /emoji/* Cache-Control "public, max-age=31536000, immutable"
-          header /packs/* Cache-Control "public, max-age=31536000, immutable"
-          header /system/accounts/avatars/* Cache-Control "public, max-age=31536000, immutable"
-          header /system/media_attachments/files/* Cache-Control "public, max-age=31536000, immutable"
-        '';
-      };
-    };
+    databases = [ "mastodon" ];
   };
 
-  # Caddy requires file and socket access
-  users.users.caddy.extraGroups = [ "mastodon" ];
+  # services.caddy = {
+  #   enable = true;
+  #   virtualHosts = {
+
+  #     # Don't forget to change the host!
+  #     "interestingtimes.club" = {
+  #       extraConfig = ''
+  #         handle_path /system/* {
+  #             file_server * {
+  #                 root /var/lib/mastodon/public-system
+  #             }
+  #         }
+
+  #         handle /api/v1/streaming/* {
+  #             reverse_proxy  unix//run/mastodon-streaming/streaming.socket
+  #         }
+
+  #         route * {
+  #             file_server * {
+  #             root ${pkgs.mastodon}/public<your-server-host>
+  #             pass_thru
+  #             }
+  #             reverse_proxy * unix//run/mastodon-web/web.socket
+  #         }
+
+  #         handle_errors {
+  #             root * ${pkgs.mastodon}/public
+  #             rewrite 500.html
+  #             file_server
+  #         }
+
+  #         encode gzip
+
+  #         header /* {
+  #             Strict-Transport-Security "max-age=31536000;"
+  #         }
+  #         header /emoji/* Cache-Control "public, max-age=31536000, immutable"
+  #         header /packs/* Cache-Control "public, max-age=31536000, immutable"
+  #         header /system/accounts/avatars/* Cache-Control "public, max-age=31536000, immutable"
+  #         header /system/media_attachments/files/* Cache-Control "public, max-age=31536000, immutable"
+  #       '';
+  #     };
+  #   };
+  # };
+
+  # # Caddy requires file and socket access
+  # users.users.caddy.extraGroups = [ "mastodon" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

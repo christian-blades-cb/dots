@@ -15,6 +15,9 @@
     wireguard-tools
 
     weechat
+
+    oci-cli # oracle cloud
+    virt-manager
   ];
 
   services.caffeine.enable = true;
