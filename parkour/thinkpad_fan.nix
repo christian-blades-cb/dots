@@ -17,12 +17,13 @@
         {type = "hwmon"; query = "/sys/devices/platform/coretemp.0/hwmon/hwmon8/temp1_input";}
         {type = "hwmon"; query = "/sys/devices/platform/coretemp.0/hwmon/hwmon8/temp5_input";}
         {type = "hwmon"; query = "/sys/devices/platform/coretemp.0/hwmon/hwmon8/temp2_input";}
-        {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1b.0/0000:03:00.0/nvme/nvme0/hwmon2/temp3_input";}
-        {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1b.0/0000:03:00.0/nvme/nvme0/hwmon2/temp1_input";}
-        {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1b.0/0000:03:00.0/nvme/nvme0/hwmon2/temp2_input";}
-        {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp3_input";}
-        {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp1_input";}
-        {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp2_input";}
+        # NOTE: these are changing now too? I feel like crying
+        # {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1b.0/0000:03:00.0/nvme/nvme0/hwmon2/temp3_input";}
+        # {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1b.0/0000:03:00.0/nvme/nvme0/hwmon2/temp1_input";}
+        # {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1b.0/0000:03:00.0/nvme/nvme0/hwmon2/temp2_input";}
+        # {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp3_input";}
+        # {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp1_input";}
+        # {type = "hwmon"; query = "/sys/devices/pci0000:00/0000:00:1d.0/0000:02:00.0/nvme/nvme1/hwmon1/temp2_input";}
         # NOTE: these seem to change zone number every boot???
         # {type = "hwmon"; query = "/sys/devices/virtual/thermal/thermal_zone10/hwmon6/temp1_input";}
         # {type = "hwmon"; query = "/sys/devices/virtual/thermal/thermal_zone19/hwmon10/temp1_input";}
