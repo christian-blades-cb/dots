@@ -195,15 +195,20 @@
         system = "aarch64-linux";
         modules = [
           ./oracle-cloud/oci-options.nix
-          ./user-blades.nix
-          ./itg-mastodon/configuration.nix
           ./oracle-cloud/oci-image.nix
-          ./tailscale.nix
+
+          ./itg-mastodon/configuration.nix
           ./itg-mastodon/backups.nix
+          ./itg-mastodon/sendgrid.nix
+
+          ./user-blades.nix
+          ./tailscale.nix
           ({ pkgs, ... }: {
             services.openssh.enable = true;
             nix.settings.trusted-users = [ "blades" ];
             security.sudo.wheelNeedsPassword = false;
+
+            # do the dance to get the right env for `tootctl`
             users.users.blades.packages = let
               tootctlScript = pkgs.writeShellScriptBin "tootctl" ''
                 sudo su -s ${pkgs.bash}/bin/bash -l -c "mastodon-env tootctl $*" - mastodon
