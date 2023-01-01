@@ -199,6 +199,7 @@
           ./itg-mastodon/configuration.nix
           ./oracle-cloud/oci-image.nix
           ./tailscale.nix
+          ./itg-mastodon/backups.nix
           ({ pkgs, ... }: {
             services.openssh.enable = true;
             nix.settings.trusted-users = [ "blades" ];
