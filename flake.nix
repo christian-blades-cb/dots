@@ -205,6 +205,7 @@
           ./tailscale.nix
           ({ pkgs, ... }: {
             services.openssh.enable = true;
+            services.fail2ban.enable = true;
             nix.settings.trusted-users = [ "blades" ];
             security.sudo.wheelNeedsPassword = false;
 
