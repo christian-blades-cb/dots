@@ -11,5 +11,6 @@
       brew "rsg/tap/dsf-cli"
       brew "rsg/tap/gcp-provision"
     '';
+    onActivation.cleanup = "uninstall";
   };
 }

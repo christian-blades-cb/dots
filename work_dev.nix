@@ -61,6 +61,7 @@ in {
     # not docker desktop
     colima
     docker
+    docker-credential-helpers
     colimaStartScript
   ];
 
