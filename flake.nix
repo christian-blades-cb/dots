@@ -199,7 +199,7 @@
 
           ./itg-mastodon/configuration.nix
           ./itg-mastodon/backups.nix
-          ./itg-mastodon/sendgrid.nix
+          ./itg-mastodon/oracle_smtp.nix
 
           ./user-blades.nix
           ./tailscale.nix
