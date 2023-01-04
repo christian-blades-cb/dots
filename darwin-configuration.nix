@@ -87,7 +87,7 @@
             SkyLight
           ];
 
-          nativeBuildInputs = [ buildSymlinks ];
+          nativeBuildInputs = [ buildSymlinks pkgs.installShellFiles ];
         });
 
   };
