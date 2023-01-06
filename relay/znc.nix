@@ -8,7 +8,7 @@
     openFirewall = false;
     useLegacyConfig = false;
     mutable = false;
-    modulePackages = with pkgs.zncModules; [ palaver ];
+    modulePackages = with pkgs.zncModules; [ palaver clientbuffer ];
 
     config = {
       LoadModule = [ "adminlog" "fail2ban" "webadmin" "palaver" ];
