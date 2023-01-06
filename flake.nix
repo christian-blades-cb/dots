@@ -200,6 +200,7 @@
           ./itg-mastodon/configuration.nix
           ./itg-mastodon/backups.nix
           ./itg-mastodon/oracle_smtp.nix
+          ./itg-mastodon/prometheus.nix
 
           ./user-blades.nix
           ./tailscale.nix
