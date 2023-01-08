@@ -65,42 +65,6 @@
       };
     };
 
-    homeConfigurations = {
-      parkour = let
-        pkgs = import nixpkgs {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-        };
-      in
-        home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-
-          modules = [
-            {
-              nixpkgs.config.allowUnfree = true;
-              nix.settings.experimental-features = [ "nix-command" "flakes" ];
-              nixpkgs.overlays = (nixpkgs.lib.attrValues overlays) ++ [ inputs.nixgl.overlay ];
-
-              # Let Home Manager install and manage itself.
-              programs.home-manager.enable = true;
-              home.stateVersion = "20.09";
-
-              targets.genericLinux.enable = true;
-
-              home.username = "blades";
-              home.homeDirectory = "/home/blades";
-            }
-            ./parkour.nix
-            ./usual_setup.nix
-            ./personal.nix
-            ./personal_git.nix
-            ./personal_gmail.nix
-          ];
-        };
-
-    };
-
-
     nixosConfigurations = {
       parkour = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -126,7 +90,6 @@
                 targets.genericLinux.enable = true;
 
                 imports = [
-                  ./parkour.nix
                   ./usual_setup.nix
                   ./personal.nix
                   ./personal_git.nix
