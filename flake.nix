@@ -219,7 +219,29 @@
           })
         ];
       };
-      
+
+      # nix build .#nixosConfigurations.metrics.config.system.build.diskstation-image
+      # upload this to the hypervisor as an image
+      # VM -> create↓ -> from disk image
+      # NOTE: Make sure to choose EFI instead of bios
+      metrics = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./diskstation-image.nix
+
+          ./metrics/configuration.nix
+          ./metrics/prometheus-collector.nix
+          ./metrics/grafana.nix
+
+          ./user-blades.nix
+          ./tailscale.nix
+          {
+            nix.settings.trusted-users = [ "blades" ];
+            security.sudo.wheelNeedsPassword = false;
+          }
+        ];
+      };
+
     };
 
     packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
