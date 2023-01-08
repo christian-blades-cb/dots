@@ -5,6 +5,16 @@
       "/var/lib/mastodon"
       "/var/backup/postgresql"
     ];
+    exclude = [
+      "/var/lib/mastodon/public_system/cache"
+      "/var/lib/mastodon/public_system/media_attachments"
+      "/var/lib/mastodon/public_system/site_uploads"
+    ];
+    prune.keep = {
+      daily = 7;
+      weekly = 4;
+      monthly = 2;
+    };
     encryption = {
       mode = "repokey-blake2";
       passCommand = "cat /home/blades/.borgbackup/elephant-key";

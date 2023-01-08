@@ -15,6 +15,11 @@
       # already backing up my blurays to the same place
       "/home/blades/Videos"
     ];
+    prune.keep = {
+      daily = 7;
+      weekly = 4;
+      monthly = 2;
+    };
     encryption = {
       mode = "repokey-blake2";
       passCommand = "cat /root/borgbackup/parkour-key";
