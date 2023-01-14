@@ -130,26 +130,21 @@
         ];
       };
 
+      # nix build .#nixosConfigurations.relay.config.system.build.digitalOceanImage
       relay = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           ./relay/configuration.nix
           ./relay/znc.nix
-          ./tailscale.nix
-          "${nixpkgs}/nixos/modules/virtualisation/digital-ocean-image.nix"
-          { swapDevices = [ { device = "/var/lib/swapfile"; size = 2 * 1024; } ]; }
-        ];
-      };
 
-      relay-container = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./relay/configuration.nix
-          ./relay/znc.nix
-          # ./tailscale.nix
-          # "${nixpkgs}/nixos/modules/virtualisation/digital-ocean-image.nix"
-          # { swapDevices = [ { device = "/var/lib/swapfile"; size = 2 * 1024; } ]; }
-          { boot.isContainer = true; networking.firewall.allowedTCPPorts = [ 5000 ]; }
+          ./tailscale.nix
+          ./user-blades.nix
+          "${nixpkgs}/nixos/modules/virtualisation/digital-ocean-image.nix"
+          {
+            swapDevices = [ { device = "/var/lib/swapfile"; size = 2 * 1024; } ];
+            nix.settings.trusted-users = [ "root" "blades" ];
+            security.sudo.wheelNeedsPassword = false;
+          }
         ];
       };
 
