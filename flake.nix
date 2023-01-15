@@ -105,26 +105,13 @@
         system = "x86_64-linux";
         modules = [
           ./inchhigh/configuration.nix
-          ./inchhigh/hardware-configuration.nix
+          # ./inchhigh/hardware-configuration.nix
           ./tailscale.nix
+          ./user-blades.nix
           {
-            nixpkgs.config.allowUnfree = true;
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
-            # nixpkgs.overlays = (nixpkgs.lib.attrValues overlays);
-          }
-        ];
-      };
-
-      inchhigh-cdimage = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./inchhigh/configuration.nix
-          ./inchhigh/hardware-configuration.nix
-          "${nixpkgs}/nixos/modules/installer/iso-image.nix"
-          ./tailscale.nix
-          {
-            nixpkgs.config.allowUnfree = true;
-            nix.settings.experimental-features = [ "nix-command" "flakes" ];
+            nix.settings.trusted-users = [ "root" "blades" ];
+            security.sudo.wheelNeedsPassword = false;
             # nixpkgs.overlays = (nixpkgs.lib.attrValues overlays);
           }
         ];
