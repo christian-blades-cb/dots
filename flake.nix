@@ -108,6 +108,7 @@
           # ./inchhigh/hardware-configuration.nix
           ./tailscale.nix
           ./user-blades.nix
+          ./home-assistant/home-assistant.nix
           {
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
             nix.settings.trusted-users = [ "root" "blades" ];
