@@ -105,6 +105,7 @@
         system = "x86_64-linux";
         modules = [
           ./inchhigh/configuration.nix
+          ./inchhigh/ups-client.nix
           # ./inchhigh/hardware-configuration.nix
           ./tailscale.nix
           ./user-blades.nix
