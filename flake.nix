@@ -26,9 +26,11 @@
     nixgl.url = "github:guibou/nixGL";
     nixgl.inputs.nixpkgs.follows = "nixpkgs";
     nixos-hardware.url = "github:nixos/nixos-hardware";
+    zwave-js.url = "github:christian-blades-cb/zwavejs-server-flake";
+    zwave-js.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, ... }: rec {
     overlays = {
       nur = inputs.nur.overlay;
       gke-gcloud = inputs.gke-gcloud.overlays.default;
@@ -110,6 +112,15 @@
           ./tailscale.nix
           ./user-blades.nix
           ./home-assistant/home-assistant.nix
+          {
+            imports = [ zwave-js.nixosModule ];
+            services.zwave-js = {
+              enable = true;
+              device = "/dev/ttyACM0";
+              host = "127.0.0.1";
+              port = 3000;
+            };
+          }
           {
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
             nix.settings.trusted-users = [ "root" "blades" ];
