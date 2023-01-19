@@ -18,7 +18,7 @@
     };
     extraOptions = [
       "--network=host"
-      # "--device=/dev/ttyACM0:/dev/ttyACM0" # zwave dongle
+      "--device=/dev/ttyACM1:/dev/ttyACM1" # zigbee dongle
     ];
   };
 
