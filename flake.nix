@@ -28,9 +28,13 @@
     nixos-hardware.url = "github:nixos/nixos-hardware";
     zwave-js.url = "github:christian-blades-cb/zwavejs-server-flake";
     zwave-js.inputs.nixpkgs.follows = "nixpkgs";
+    prometheus-mastodon = {
+      url = "github:christian-blades-cb/mastodon_prom_exporter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, ... }: rec {
     overlays = {
       nur = inputs.nur.overlay;
       gke-gcloud = inputs.gke-gcloud.overlays.default;
@@ -162,6 +166,17 @@
 
           ./user-blades.nix
           ./tailscale.nix
+
+          {
+            imports = [ prometheus-mastodon.nixosModule ];
+            services.mastodon_prom_exporter = {
+              enable = true;
+              port = 9020;
+              host = "https://interestingtimes.club";
+            };
+            networking.firewall.allowedTCPPorts = [ 9020 ];
+          }
+
           ({ pkgs, ... }: {
             services.openssh.enable = true;
             services.fail2ban.enable = true;

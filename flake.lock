@@ -2,7 +2,7 @@
   "nodes": {
     "alejandra": {
       "inputs": {
-        "fenix": "fenix_2",
+        "fenix": "fenix_3",
         "flakeCompat": "flakeCompat",
         "nixpkgs": [
           "zwave-js",
@@ -42,6 +42,33 @@
       }
     },
     "crane": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "flake-utils": [
+          "prometheus-mastodon",
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "prometheus-mastodon",
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay"
+      },
+      "locked": {
+        "lastModified": 1673405853,
+        "narHash": "sha256-6Nq9DuOo+gE2I8z5UZaKuumykz2xxZ9JGYmUthOuwSA=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "b13963c8c18026aa694acd98d14f66d24666f70b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
+    "crane_2": {
       "flake": false,
       "locked": {
         "lastModified": 1670900067,
@@ -98,7 +125,7 @@
       "inputs": {
         "alejandra": "alejandra",
         "all-cabal-json": "all-cabal-json",
-        "crane": "crane",
+        "crane": "crane_2",
         "devshell": "devshell",
         "flake-parts": "flake-parts",
         "flake-utils-pre-commit": "flake-utils-pre-commit",
@@ -148,12 +175,34 @@
     "fenix_2": {
       "inputs": {
         "nixpkgs": [
+          "prometheus-mastodon",
+          "nixpkgs"
+        ],
+        "rust-analyzer-src": "rust-analyzer-src_2"
+      },
+      "locked": {
+        "lastModified": 1673158907,
+        "narHash": "sha256-SeThdOORplSy0eDnU2s6SQeQgS7LLu2q0s0+t8wyETs=",
+        "owner": "nix-community",
+        "repo": "fenix",
+        "rev": "73facffb51e94484809be674748ee7bf8f37d7f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "fenix",
+        "type": "github"
+      }
+    },
+    "fenix_3": {
+      "inputs": {
+        "nixpkgs": [
           "zwave-js",
           "dream2nix",
           "alejandra",
           "nixpkgs"
         ],
-        "rust-analyzer-src": "rust-analyzer-src_2"
+        "rust-analyzer-src": "rust-analyzer-src_3"
       },
       "locked": {
         "lastModified": 1657607339,
@@ -166,6 +215,22 @@
       "original": {
         "owner": "nix-community",
         "repo": "fenix",
+        "type": "github"
+      }
+    },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1668681692,
+        "narHash": "sha256-Ht91NGdewz8IQLtWZ9LCeNXMSXHUss+9COoqu6JLmXU=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "009399224d5e398d03b22badca40a37ac85412a1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
         "type": "github"
       }
     },
@@ -277,6 +342,21 @@
         "type": "github"
       }
     },
+    "flake-utils_6": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "flakeCompat": {
       "flake": false,
       "locked": {
@@ -331,6 +411,27 @@
       }
     },
     "gitignore": {
+      "inputs": {
+        "nixpkgs": [
+          "prometheus-mastodon",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1660459072,
+        "narHash": "sha256-8DFJjXG8zqoONA1vXtgeKXy68KdJL5UaXR8NtVMUbx8=",
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "rev": "a20de23b925fd8264fd7fad6454652e142fd7f73",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "gitignore.nix",
+        "type": "github"
+      }
+    },
+    "gitignore_2": {
       "inputs": {
         "nixpkgs": [
           "zwave-js",
@@ -605,6 +706,30 @@
         "type": "github"
       }
     },
+    "prometheus-mastodon": {
+      "inputs": {
+        "crane": "crane",
+        "fenix": "fenix_2",
+        "flake-utils": "flake-utils_5",
+        "gitignore": "gitignore",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1674097173,
+        "narHash": "sha256-SAJDT/6k6r5bHQeP3J3QiDFaRENAEeCELKqx90wMCno=",
+        "owner": "christian-blades-cb",
+        "repo": "mastodon_prom_exporter",
+        "rev": "a24a9445e81af11328f23ee416238f05caee2399",
+        "type": "github"
+      },
+      "original": {
+        "owner": "christian-blades-cb",
+        "repo": "mastodon_prom_exporter",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "darwin": "darwin",
@@ -617,6 +742,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
+        "prometheus-mastodon": "prometheus-mastodon",
         "yabai-src": "yabai-src",
         "zwave-js": "zwave-js"
       }
@@ -641,6 +767,23 @@
     "rust-analyzer-src_2": {
       "flake": false,
       "locked": {
+        "lastModified": 1673119177,
+        "narHash": "sha256-Eabe5SOI5XHRrjcFIgGXE0P5CxHlha07IaBBagM0Ap8=",
+        "owner": "rust-lang",
+        "repo": "rust-analyzer",
+        "rev": "1bd1a095936f2c16493743a05f6f14285c98ec8a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rust-lang",
+        "ref": "nightly",
+        "repo": "rust-analyzer",
+        "type": "github"
+      }
+    },
+    "rust-analyzer-src_3": {
+      "flake": false,
+      "locked": {
         "lastModified": 1657557289,
         "narHash": "sha256-PRW+nUwuqNTRAEa83SfX+7g+g8nQ+2MMbasQ9nt6+UM=",
         "owner": "rust-lang",
@@ -652,6 +795,33 @@
         "owner": "rust-lang",
         "ref": "nightly",
         "repo": "rust-analyzer",
+        "type": "github"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "flake-utils": [
+          "prometheus-mastodon",
+          "crane",
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "prometheus-mastodon",
+          "crane",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1672712534,
+        "narHash": "sha256-8S0DdMPcbITnlOu0uA81mTo3hgX84wK8S9wS34HEFY4=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "69fb7bf0a8c40e6c4c197fa1816773774c8ac59f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
         "type": "github"
       }
     },
@@ -689,19 +859,19 @@
     "zwave-js": {
       "inputs": {
         "dream2nix": "dream2nix",
-        "flake-utils": "flake-utils_5",
-        "gitignore": "gitignore",
+        "flake-utils": "flake-utils_6",
+        "gitignore": "gitignore_2",
         "nixpkgs": [
           "nixpkgs"
         ],
         "zwavejs-src": "zwavejs-src"
       },
       "locked": {
-        "lastModified": 1674000415,
-        "narHash": "sha256-iBt64CIzHTAOJQ2Vdw7+6F8aSYOb290ajmnNO6rsZXA=",
+        "lastModified": 1674015718,
+        "narHash": "sha256-Z1DiSXNslDqnO9Dh2qaIOntp5PP1TBpe4s3LdwtzjgU=",
         "owner": "christian-blades-cb",
         "repo": "zwavejs-server-flake",
-        "rev": "563ff741b37abdb8569c3ed01e12e043c2a9a020",
+        "rev": "197e1c7c2eb7566fa19bbf6ffc18de8343ba76fb",
         "type": "github"
       },
       "original": {
