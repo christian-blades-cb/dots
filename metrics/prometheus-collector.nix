@@ -17,6 +17,15 @@ in
           }
         ];
       }
+      {
+        job_name = "ups";
+        metrics_path = "/ups_metrics";
+        static_configs = [
+          {
+            targets = [ "inchhigh.blades:9199" ];
+          }
+        ];
+      }
     ];
   };
 

@@ -32,9 +32,13 @@
       url = "github:christian-blades-cb/mastodon_prom_exporter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    prom-nut = {
+      url = "github:christian-blades-cb/nut_prom_exporter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, prom-nut, ... }: rec {
     overlays = {
       nur = inputs.nur.overlay;
       gke-gcloud = inputs.gke-gcloud.overlays.default;
@@ -130,6 +134,19 @@
             nix.settings.trusted-users = [ "root" "blades" ];
             security.sudo.wheelNeedsPassword = false;
             # nixpkgs.overlays = (nixpkgs.lib.attrValues overlays);
+          }
+          {
+            imports = [ prom-nut.nixosModule ];
+
+            networking.firewall.allowedTCPPorts = [ 9199 ];
+
+            services.nut_prom_exporter = {
+              enable = true;
+              server = "ds220plus.blades";
+              user = "monuser";
+              pass = "secret";
+              bind = ":9199";
+            };
           }
         ];
       };

@@ -357,6 +357,21 @@
         "type": "github"
       }
     },
+    "flake-utils_7": {
+      "locked": {
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "flakeCompat": {
       "flake": false,
       "locked": {
@@ -662,6 +677,23 @@
         "type": "github"
       }
     },
+    "nut-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1672506246,
+        "narHash": "sha256-imO++i4bfxQnMNh+BOZRYvJAzqgehFIElpQX3NyQF+8=",
+        "owner": "DRuggeri",
+        "repo": "nut_exporter",
+        "rev": "1625e235d0250897ea61c960e466a89c346e4575",
+        "type": "github"
+      },
+      "original": {
+        "owner": "DRuggeri",
+        "ref": "v2.5.2",
+        "repo": "nut_exporter",
+        "type": "github"
+      }
+    },
     "poetry2nix": {
       "flake": false,
       "locked": {
@@ -706,11 +738,33 @@
         "type": "github"
       }
     },
+    "prom-nut": {
+      "inputs": {
+        "flake-utils": "flake-utils_5",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nut-src": "nut-src"
+      },
+      "locked": {
+        "lastModified": 1674273440,
+        "narHash": "sha256-lDuUxzRJdoF1MrwjPDPFehEq2VDEcpXLlFOV0a4azrs=",
+        "owner": "christian-blades-cb",
+        "repo": "nut_prom_exporter",
+        "rev": "6551a017d8bfa0ed39efea5c02a88e9a6ad302ce",
+        "type": "github"
+      },
+      "original": {
+        "owner": "christian-blades-cb",
+        "repo": "nut_prom_exporter",
+        "type": "github"
+      }
+    },
     "prometheus-mastodon": {
       "inputs": {
         "crane": "crane",
         "fenix": "fenix_2",
-        "flake-utils": "flake-utils_5",
+        "flake-utils": "flake-utils_6",
         "gitignore": "gitignore",
         "nixpkgs": [
           "nixpkgs"
@@ -742,6 +796,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
+        "prom-nut": "prom-nut",
         "prometheus-mastodon": "prometheus-mastodon",
         "yabai-src": "yabai-src",
         "zwave-js": "zwave-js"
@@ -859,7 +914,7 @@
     "zwave-js": {
       "inputs": {
         "dream2nix": "dream2nix",
-        "flake-utils": "flake-utils_6",
+        "flake-utils": "flake-utils_7",
         "gitignore": "gitignore_2",
         "nixpkgs": [
           "nixpkgs"
