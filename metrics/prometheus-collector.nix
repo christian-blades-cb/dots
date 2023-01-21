@@ -26,6 +26,14 @@ in
           }
         ];
       }
+      {
+        job_name = "inchhigh";
+        static_configs = [
+          {
+            targets = map (x: "inchhigh.blades:${toString config.services.prometheus.exporters.${x}.port}") [ "node" "systemd" ];
+          }
+        ];
+      }
     ];
   };
 

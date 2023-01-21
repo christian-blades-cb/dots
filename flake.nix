@@ -136,6 +136,7 @@
             # nixpkgs.overlays = (nixpkgs.lib.attrValues overlays);
           }
           {
+            # ups prometheus monitoring
             imports = [ prom-nut.nixosModule ];
 
             networking.firewall.allowedTCPPorts = [ 9199 ];
@@ -146,6 +147,18 @@
               user = "monuser";
               pass = "secret";
               bind = ":9199";
+            };
+          }
+          {
+            services.prometheus.exporters = {
+              node = {
+                enable = true;
+                openFirewall = true;
+              };
+              systemd = {
+                enable = true;
+                openFirewall = true;
+              };
             };
           }
         ];
