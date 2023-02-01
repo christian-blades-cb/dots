@@ -120,6 +120,7 @@
           ./tailscale.nix
           ./user-blades.nix
           ./home-assistant/home-assistant.nix
+          ./home-assistant/scrypted.nix
           {
             imports = [ zwave-js.nixosModule ];
             services.zwave-js = {
