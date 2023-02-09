@@ -121,6 +121,7 @@
           ./user-blades.nix
           ./home-assistant/home-assistant.nix
           ./home-assistant/scrypted.nix
+          ./peertube/peertube.nix
           {
             imports = [ zwave-js.nixosModule ];
             services.zwave-js = {
