@@ -247,6 +247,27 @@
         ];
       };
 
+      # nix build .#nixosConfigurations.culdesac.config.system.build.VMA
+      culdesac = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./culdesac/configuration.nix
+          ./peertube/peertube.nix
+
+          ./user-blades.nix
+          ({ modulesPath, pkgs, config, ... }: {
+            imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
+            proxmox.qemuConf.name = config.networking.hostName;
+            services.cloud-init.network.enable = true;
+
+            services.openssh.enable = true;
+            services.fail2ban.enable = true;
+            nix.settings.trusted-users = [ "blades" ];
+            security.sudo.wheelNeedsPassword = false;
+          })
+        ];
+      };
+
     };
 
     packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
