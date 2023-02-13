@@ -268,6 +268,51 @@
         ];
       };
 
+      # unbound instead of pihole
+      adhole-prime = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./adhole/configuration.nix
+          ./adhole/unbound-adblocked.nix
+
+          ./user-blades.nix
+          ({ modulesPath, config, pkgs, ... }: {
+            imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
+            networking.hostName = "adhole-prime";
+            proxmox.qemuConf.net0 = "virtio=00:00:00:00:00:00,bridge=vmbr0,firewall=1,tag=47"; # tag=47 for dmz
+            proxmox.qemuConf.name = config.networking.hostName;
+            services.cloud-init.network.enable = true;
+
+            services.openssh.enable = true;
+            services.fail2ban.enable = true;
+            nix.settings.trusted-users = [ "blades" ];
+            security.sudo.wheelNeedsPassword = false;
+          })
+        ];
+      };
+
+      adhole = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./adhole/configuration.nix
+          ./adhole/unbound-adblocked.nix
+
+          ./user-blades.nix
+          ({ modulesPath, config, pkgs, ... }: {
+            imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
+            networking.hostName = "adhole";
+            proxmox.qemuConf.net0 = "virtio=00:00:00:00:00:00,bridge=vmbr0,firewall=1,tag=47"; # tag=47 for dmz
+            proxmox.qemuConf.name = config.networking.hostName;
+            services.cloud-init.network.enable = true;
+
+            services.openssh.enable = true;
+            services.fail2ban.enable = true;
+            nix.settings.trusted-users = [ "blades" ];
+            security.sudo.wheelNeedsPassword = false;
+          })
+        ];
+      };
+
     };
 
     packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
