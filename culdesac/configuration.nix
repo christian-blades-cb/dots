@@ -1,5 +1,30 @@
 { pkgs, config, ... }:
 {
+  # manual step: add virtio1 disk to VM
+  fileSystems."/videostore" = {
+    device = "/dev/vdb1";
+    fsType = "ext4";
+
+    autoResize = true;
+
+    autoFormat = true;
+    label = "videostore";
+  };
+
+  systemd.services."peertube-videostore-init" = {
+    enable = true;
+    wantedBy = [ "peertube.service" ];
+    after = [ "videostore.mount" ];
+    script = ''
+      mkdir -p /videostore/peertube
+      chown -R ${config.services.peertube.user}:${config.services.peertube.group} /videostore/peertube
+    '';
+
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+  };
 
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
