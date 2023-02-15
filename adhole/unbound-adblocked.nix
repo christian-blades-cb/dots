@@ -25,11 +25,6 @@ in {
   services.unbound = {
 
     enable = true;
-    # allowedAccess = [
-    #   "127.0.0.0/24"
-    #   "192.168.0.0/17"
-    #   "192.168.129.0/24"
-    # ];
     resolveLocalQueries = false;
 
     settings = {
@@ -65,16 +60,6 @@ in {
       server.include = [ "${adblockLocalZones}" ];
     };
 
-    # forwardAddresses =
-    #   [ "1.0.0.1@853#cloudflare-dns.com" "1.1.1.1@853#cloudflare-dns.com" ];
-    # extraConfig = ''
-    #   so-reuseport: yes
-    #   tls-cert-bundle: /etc/ssl/certs/ca-certificates.crt
-    #   tls-upstream: yes
-
-
-    #   include: "${adblockLocalZones}"
-    # '';
   };
 
 }
