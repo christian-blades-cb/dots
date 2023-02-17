@@ -36,9 +36,13 @@
       url = "github:christian-blades-cb/nut_prom_exporter";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    dashy = {
+      url = "github:christian-blades-cb/dashy-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, prom-nut, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, prom-nut, dashy, ... }: rec {
     overlays = {
       nur = inputs.nur.overlay;
       gke-gcloud = inputs.gke-gcloud.overlays.default;
@@ -315,7 +319,49 @@
         ];
       };
 
+      # nix build .#nixosConfigurations.dashboard.config.system.build.tarball
+      dashboard = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          ./user-blades.nix
+
+          ({ pkgs, modulesPath, ... }: {
+            imports = [
+              dashy.nixosModule
+              "${modulesPath}/virtualisation/proxmox-lxc.nix"
+            ];
+
+            services.dashy = {
+              enable = true;
+              host = "127.0.0.1";
+              port = 4000;
+              settings = builtins.readFile ./dashy/conf.yml;
+            };
+
+            services.nginx = {
+              enable = true;
+              virtualHosts."dashboard.blades" = {
+                rejectSSL = true;
+                locations."/" = {
+                  proxyPass = "http://localhost:4000";
+                };
+              };
+            };
+
+            networking.firewall.allowedTCPPorts = [ 80 443 ];
+
+            services.openssh.enable = true;
+            services.fail2ban.enable = true;
+            nix.settings.trusted-users = [ "blades" ];
+            security.sudo.wheelNeedsPassword = false;
+
+            system.stateVersion = "23.05";
+          })
+        ];
+      };
     };
+
+
 
     packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
   };
