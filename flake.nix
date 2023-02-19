@@ -85,7 +85,21 @@
       };
     };
 
-    nixosConfigurations = {
+    nixosConfigurations = let
+      letMeIn = {
+        imports = [ ./user-blades.nix ];
+
+        services.openssh.enable = true;
+        services.fail2ban.enable = true;
+        nix.settings.trusted-users = [ "blades" ];
+        security.sudo.wheelNeedsPassword = false;
+      };
+      defaultSystem = {
+        time.timeZone = "America/New_York";
+        i18n.defaultLocale = "en_US.UTF-8";
+        system.stateVersion = "22.11";
+      };
+    in {
       parkour = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
@@ -319,30 +333,55 @@
             services.fail2ban.enable = true;
             nix.settings.trusted-users = [ "blades" ];
             security.sudo.wheelNeedsPassword = false;
-
-            peertube.dataDirs = [ "/videostore" ];
           })
         ];
       };
 
-      # nix build .#nixosConfigurations.dashboard.config.system.build.tarball
+      # nix build .#nixosConfigurations.adhole-lxc.config.system.build.tarball
+      adhole-lxc = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          ./adhole/unbound-adblocked.nix
+          ({modulesPath, ...}: {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "adhole-ct-1";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+        ];
+      };
+
+      # nix build .#nixosConfigurations.dashboard.config.system.build.VMA
       dashboard = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./user-blades.nix
-
-          ({ pkgs, modulesPath, ... }: {
+          letMeIn
+          defaultSystem
+          {
+            _module.args.nixinate = {
+              host = "dashboard";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+          ({ pkgs, config, modulesPath, ... }: {
             imports = [
-              dashy.nixosModule
-              "${modulesPath}/virtualisation/proxmox-lxc.nix"
+              "${modulesPath}/virtualisation/proxmox-image.nix"
             ];
 
-            services.dashy = {
-              enable = true;
-              host = "127.0.0.1";
-              port = 4000;
-              settings = builtins.readFile ./dashy/conf.yml;
-            };
+            networking.hostName = "dashboard";
+            proxmox.qemuConf.name = "dashboard";
+            services.cloud-init.network.enable = true;
 
             services.nginx = {
               enable = true;
@@ -354,14 +393,52 @@
               };
             };
 
+            virtualisation.oci-containers.containers.dashy = {
+              image = "lissy93/dashy:latest";
+              ports = [
+                "127.0.0.1:4000:4000/tcp"
+              ];
+              volumes = [
+                "/var/lib/dashy/conf.yml:/app/public/conf.yml"
+              ];
+              # user = "dashy:dashy";
+              environment = {
+                "PORT" = "4000";
+              };
+            };
+
+            # users.groups."dashy" = {};
+
+            # users.users."dashy" = {
+            #   isSystemUser = true;
+            #   group = "dashy";
+            # };
+
+            systemd.services.dashy-init = {
+              enable = true;
+
+              wantedBy = [ "${config.virtualisation.oci-containers.backend}-dashy.service" ];
+
+              script = ''
+                umask 077
+                mkdir -p /var/lib/dashy/
+                umask 066
+                cp ${./dashy/conf.yml} /var/lib/dashy/conf.yml
+                chmod 0600 /var/lib/dashy/conf.yml
+              '';
+
+              serviceConfig = {
+                User = "dashy";
+                Group = "dashy";
+                Type = "oneshot";
+                RemainAfterExit = true;
+                StateDirectory = "dashy";
+                StateDirectoryMode = "0700";
+              };
+
+            };
+
             networking.firewall.allowedTCPPorts = [ 80 443 ];
-
-            services.openssh.enable = true;
-            services.fail2ban.enable = true;
-            nix.settings.trusted-users = [ "blades" ];
-            security.sudo.wheelNeedsPassword = false;
-
-            system.stateVersion = "23.05";
           })
         ];
       };
