@@ -401,18 +401,10 @@
               volumes = [
                 "/var/lib/dashy/conf.yml:/app/public/conf.yml"
               ];
-              # user = "dashy:dashy";
               environment = {
                 "PORT" = "4000";
               };
             };
-
-            # users.groups."dashy" = {};
-
-            # users.users."dashy" = {
-            #   isSystemUser = true;
-            #   group = "dashy";
-            # };
 
             systemd.services.dashy-init = {
               enable = true;
