@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 # https://www.reddit.com/r/NixOS/comments/innzkw/pihole_style_adblock_with_nix_and_unbound/
 
 let
@@ -19,6 +19,8 @@ let
     '';
   };
 in {
+  systemd.suppressedSystemUnits = [ "systemd-resolved.service" ];
+
   networking.firewall.allowedUDPPorts = [ 53 ];
   networking.firewall.allowedTCPPorts = [ 53 ];
 
