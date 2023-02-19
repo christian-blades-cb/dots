@@ -918,6 +918,26 @@
         "type": "github"
       }
     },
+    "nixinate": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1671116920,
+        "narHash": "sha256-QmDGsUUmAGn77UTR7eQJmebl8f3IIUCtmbbAdJqKA3s=",
+        "owner": "matthewcroughan",
+        "repo": "nixinate",
+        "rev": "b4d17b8e2a4abc47e93e1a1c466e0286a63640d8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "matthewcroughan",
+        "repo": "nixinate",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1670174919,
@@ -1193,6 +1213,7 @@
         "govuln": "govuln",
         "home-manager": "home-manager",
         "nixgl": "nixgl",
+        "nixinate": "nixinate",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur": "nur",

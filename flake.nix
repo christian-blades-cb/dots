@@ -40,9 +40,13 @@
       url = "github:christian-blades-cb/dashy-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixinate = {
+      url = "github:matthewcroughan/nixinate";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, prom-nut, dashy, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, prom-nut, dashy, nixinate, ... }: rec {
     overlays = {
       nur = inputs.nur.overlay;
       gke-gcloud = inputs.gke-gcloud.overlays.default;
@@ -50,6 +54,8 @@
       govuln = inputs.govuln.overlay;
       ghz = inputs.ghz.overlay;
     };
+
+    apps = nixinate.nixinate.x86_64-linux self;
 
     darwinConfigurations = {
       "macos-C02GQ06Z1PG3" = darwin.lib.darwinSystem {
