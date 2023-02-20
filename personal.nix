@@ -1,4 +1,4 @@
-{ config, pkgs, ...}:
+{ config, pkgs, agenix, ...}:
 {
   nixpkgs.config.allowUnfree = true;
   home.packages = with pkgs; [
@@ -18,6 +18,8 @@
 
     oci-cli # oracle cloud
     virt-manager
+
+    agenix.packages.x86_64-linux.default
   ];
 
   services.caffeine.enable = true;

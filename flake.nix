@@ -44,9 +44,13 @@
       url = "github:matthewcroughan/nixinate";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, prom-nut, dashy, nixinate, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, prom-nut, dashy, nixinate, agenix, ... }: rec {
     overlays = {
       nur = inputs.nur.overlay;
       gke-gcloud = inputs.gke-gcloud.overlays.default;
@@ -106,6 +110,7 @@
           ./parkour/configuration.nix
           ./parkour/thinkpad_fan.nix
           ./tailscale.nix
+          agenix.nixosModules.default
           nixos-hardware.nixosModules.lenovo-thinkpad-x1-extreme-gen2
           {
             nixpkgs.config.allowUnfree = true;
@@ -114,6 +119,7 @@
           }
           home-manager.nixosModules.home-manager
           {
+            home-manager.extraSpecialArgs = { inherit agenix; };
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.users.blades = (
@@ -434,8 +440,68 @@
           })
         ];
       };
-    };
 
+      keycloak = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          {
+            age.secrets."keycloak-dbpass".file = ./secrets/keycloak-dbpass.age;
+          }
+          ({modulesPath, ...}: {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          ({config, ...} : {
+            networking.hostName = "keycloak";
+
+            services.keycloak = {
+              enable = true;
+              database = {
+                createLocally = true;
+                passwordFile = config.age.secrets."keycloak-dbpass".path;
+              };
+              settings.hostname = "keycloak";
+            };
+
+            services.postgresql.enable = true;
+          })
+          {
+            _module.args.nixinate = {
+              host = "keycloak";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+        ];
+      };
+
+      authority = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          ./step-ca/authority.nix
+          ({ config, modulesPath, ... }: {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "authority";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+        ];
+      };
+
+    };
 
 
     packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;

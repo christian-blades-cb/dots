@@ -1,0 +1,121 @@
+{
+	"root": "/var/lib/step-ca/certs/root_ca.crt",
+	"federatedRoots": null,
+	"crt": "/var/lib/step-ca/certs/intermediate_ca.crt",
+	"key": "/var/lib/step-ca/secrets/intermediate_ca_key",
+	"address": ":443",
+	"insecureAddress": "",
+	"dnsNames": [
+		"authority.blades",
+		"authority.dmz",
+		"authority",
+		"authority.beard.institute"
+	],
+	"ssh": {
+		"hostKey": "/var/lib/step-ca/secrets/ssh_host_ca_key",
+		"userKey": "/var/lib/step-ca/secrets/ssh_user_ca_key"
+	},
+	"logger": {
+		"format": "text"
+	},
+	"db": {
+		"type": "badgerv2",
+		"dataSource": "/var/lib/step-ca/db",
+		"badgerFileLoadingMode": ""
+	},
+	"authority": {
+		"provisioners": [
+			{
+				"type": "JWK",
+				"name": "coyote@beard.institute",
+				"key": {
+					"use": "sig",
+					"kty": "EC",
+					"kid": "gTi0mLlBLucXIc_G385RTnCrUMeJw6nzSfvic_UvgR0",
+					"crv": "P-256",
+					"alg": "ES256",
+					"x": "AoHJuZ-p9F9o3AI80L1fGOBNMQeRvyJOdn80RUjgyrY",
+					"y": "Tn9NywVMTwJYuGR-gxtCLnzcx8MqkCYXdUF8hNPVEZU"
+				},
+				"encryptedKey": "eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJjdHkiOiJqd2sranNvbiIsImVuYyI6IkEyNTZHQ00iLCJwMmMiOjEwMDAwMCwicDJzIjoieVd5TzNBek84OXVEQmNkZUR5Rlh0QSJ9.eaC0VwzTzuI2Zi_tRxMtpUHL5KrSRNwk-XjRhebY41YcSRWlqRuvyw.NC-fEjnjHfUjnXe6.Uz1h9UgcCCRc_89hfGKqkJvOlBoyKmRMUDQuu_GA3hE_srN5cPmty5nTvEX4-aXW36eGKuQVSoq5E4_KKHXjpI97A4z4t8KySiOmCS3ovb9djnBr2du-_pZM69GRuKA5BmM_2N1qDXcLs9Wo2KCcr0rOIoKb2NKTdYXC2yAAutGWdvoxbuwaXIAbn4v_J5n8wM05_3ae4Q_JiolmsIlHkylVNRBW45IZzULfwnz8IDnSU3xyx6XEV1xqPOUW4cEfrGztrm6bpbiBEOWnFjAsjUobPIGK4BfDjuZb2wyu4BIV2WAl1c17PJRr91x4O2yOucudHAhczZ-303Cj8IE.0MRZoi5gsPBxR0tPgXAm5Q",
+				"claims": {
+					"enableSSHCA": true
+				}
+			},
+			{
+				"type": "ACME",
+				"name": "acme"
+			},
+			{
+				"type": "SSHPOP",
+				"name": "sshpop",
+				"claims": {
+					"enableSSHCA": true
+				}
+			}
+		]
+	},
+	"tls": {
+		"cipherSuites": [
+			"TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+			"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+		],
+		"minVersion": 1.2,
+		"maxVersion": 1.3,
+		"renegotiation": false
+	},
+	"templates": {
+		"ssh": {
+			"user": [
+				{
+					"name": "config.tpl",
+					"type": "snippet",
+					"template": "/var/lib/step-ca/templates/ssh/config.tpl",
+					"path": "~/.ssh/config",
+					"comment": "#"
+				},
+				{
+					"name": "step_includes.tpl",
+					"type": "prepend-line",
+					"template": "/var/lib/step-ca/templates/ssh/step_includes.tpl",
+					"path": "${STEPPATH}/ssh/includes",
+					"comment": "#"
+				},
+				{
+					"name": "step_config.tpl",
+					"type": "file",
+					"template": "/var/lib/step-ca/templates/ssh/step_config.tpl",
+					"path": "ssh/config",
+					"comment": "#"
+				},
+				{
+					"name": "known_hosts.tpl",
+					"type": "file",
+					"template": "/var/lib/step-ca/templates/ssh/known_hosts.tpl",
+					"path": "ssh/known_hosts",
+					"comment": "#"
+				}
+			],
+			"host": [
+				{
+					"name": "sshd_config.tpl",
+					"type": "snippet",
+					"template": "/var/lib/step-ca/templates/ssh/sshd_config.tpl",
+					"path": "/etc/ssh/sshd_config",
+					"comment": "#",
+					"requires": [
+						"Certificate",
+						"Key"
+					]
+				},
+				{
+					"name": "ca.tpl",
+					"type": "snippet",
+					"template": "/var/lib/step-ca/templates/ssh/ca.tpl",
+					"path": "/etc/ssh/ca.pub",
+					"comment": "#"
+				}
+			]
+		}
+	}
+}
