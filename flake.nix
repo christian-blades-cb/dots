@@ -462,10 +462,40 @@
                 createLocally = true;
                 passwordFile = config.age.secrets."keycloak-dbpass".path;
               };
-              settings.hostname = "keycloak";
+              sslCertificateKey = "/var/lib/acme/keycloak/key.pem";
+              sslCertificate = "/var/lib/acme/keycloak/cert.pem";
+              settings = {
+                hostname = "keycloak.beard.institute";
+                http-port = 8080;
+              };
+
             };
 
             services.postgresql.enable = true;
+
+            users.users.keycloak = {
+              isSystemUser = true;
+              group = "keycloak";
+              home = "/var/lib/keycloak";
+            };
+
+            users.groups.keycloak = {};
+
+            security.acme.certs.keycloak = {
+              domain = "keycloak.beard.institute";
+              server = "https://authority.beard.institute/acme/acme/directory";
+              listenHTTP = ":80";
+              group = "keycloak";
+            };
+
+            security.acme.acceptTerms = true;
+            security.acme.defaults.email = "christian.blades+acme@gmail.com";
+
+            networking.firewall.allowedTCPPorts = [ 80 443 ];
+
+            security.pki.certificateFiles = [
+              ./step-ca/certs/root_ca.crt
+            ];
           })
           {
             _module.args.nixinate = {
