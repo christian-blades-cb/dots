@@ -116,6 +116,9 @@
             nixpkgs.config.allowUnfree = true;
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
             nixpkgs.overlays = (nixpkgs.lib.attrValues overlays) ++ [ inputs.nixgl.overlay ];
+            security.pki.certificateFiles = [
+              ./step-ca/certs/root_ca.crt
+            ];
           }
           home-manager.nixosModules.home-manager
           {
