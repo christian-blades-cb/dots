@@ -192,6 +192,8 @@ in {
     niv
     rustup
     rust-analyzer-nightly
+    cargo-nextest
+
     dhall
     dhall-json
     dhall-lsp-server

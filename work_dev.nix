@@ -12,7 +12,7 @@ let
   };
   colimaStartScript = pkgs.writeShellScriptBin "colima-start" ''
     # trick colima into finishing the setup, we already have the context set ourselves
-    DOCKER_CONFIG=$(mktemp -d) colima start
+    DOCKER_CONFIG=$(mktemp -d) colima start $@
   '';
 in {
   programs.go = {
@@ -31,6 +31,9 @@ in {
     gke-gcloud-auth-plugin
     govulncheck
     ghz
+
+    # golangci-lint dependency?
+    diffutils
 
     # python tooling
     python3Packages.keyring
@@ -58,11 +61,16 @@ in {
     protoc-gen-twirp_php
     buf
 
+    # grpc
+    grpcurl
+    evans
+
     # not docker desktop
     colima
     docker
     docker-credential-helpers
     colimaStartScript
+    kubectl
   ];
 
   # requires a manual step of copying this file to `config_default`
