@@ -394,9 +394,10 @@
 
             services.nginx = {
               enable = true;
-              virtualHosts."dashboard.blades" = {
-                rejectSSL = true;
+              virtualHosts."dashboard.beard.institute" = {
+                serverAliases = [ "dashboard" "dashboard.blades" ];
                 locations."/" = {
+                  recommendedProxySettings = true;
                   proxyPass = "http://localhost:4000";
                 };
               };
@@ -470,8 +471,30 @@
               settings = {
                 hostname = "keycloak.beard.institute";
                 http-port = 8080;
+                https-port = 8443;
+                proxy = "edge";
               };
+            };
 
+            # putting nginx in front of keycloak because it won't serve the new cert when we refresh it from acme
+            services.nginx = {
+              enable = true;
+              recommendedTlsSettings = true;
+              virtualHosts."keycloak.beard.institute" = {
+                serverAliases =  [ "keycloak.blades" ];
+                addSSL = true;
+                useACMEHost = "keycloak";
+                locations."/.well-known/acme-challenge" = {
+                  root = "/var/lib/acme/acme-challenge";
+                  extraConfig = ''
+                    auth_basic off;
+                  '';
+                };
+                locations."/" = {
+                  proxyPass = "http://localhost:8080";
+                  recommendedProxySettings = true;
+                };
+              };
             };
 
             services.postgresql.enable = true;
@@ -487,8 +510,8 @@
             security.acme.certs.keycloak = {
               domain = "keycloak.beard.institute";
               server = "https://authority.beard.institute/acme/acme/directory";
-              listenHTTP = ":80";
-              group = "keycloak";
+              group = "nginx";
+              webroot = "/var/lib/acme/acme-challenge";
             };
 
             security.acme.acceptTerms = true;

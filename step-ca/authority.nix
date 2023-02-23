@@ -38,7 +38,7 @@
     path = "/var/lib/step-ca/certs/root_ca.crt";
   };
 
-    services.step-ca = {
+  services.step-ca = {
     enable = true;
     settings = builtins.fromJSON (builtins.readFile ./ca.json);
     intermediatePasswordFile = config.age.secrets."step-ca-pass".path;
