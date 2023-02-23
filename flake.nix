@@ -102,6 +102,9 @@
         time.timeZone = "America/New_York";
         i18n.defaultLocale = "en_US.UTF-8";
         system.stateVersion = "22.11";
+        security.pki.certificateFiles = [
+          ./step-ca/certs/root_ca.crt
+        ];
       };
     in {
       parkour = nixpkgs.lib.nixosSystem {
@@ -394,11 +397,18 @@
 
             services.nginx = {
               enable = true;
+              recommendedTlsSettings = true;
+
               virtualHosts."dashboard.beard.institute" = {
-                serverAliases = [ "dashboard" "dashboard.blades" ];
+                # serverAliases = [ "dashboard" "dashboard.blades" ];
+                enableACME = true;
+                addSSL = true;
                 locations."/" = {
                   recommendedProxySettings = true;
                   proxyPass = "http://localhost:4000";
+                  extraConfig = ''
+                    add_header Access-Control-Allow-Origin https://keycloak.beard.institute;
+                  '';
                 };
               };
             };
@@ -440,6 +450,10 @@
 
             };
 
+            security.acme.acceptTerms = true;
+            security.acme.defaults.email = "christian.blades+acme@gmail.com";
+            security.acme.defaults.server = "https://authority.beard.institute/acme/acme/directory";
+
             networking.firewall.allowedTCPPorts = [ 80 443 ];
           })
         ];
@@ -460,6 +474,7 @@
           ({config, ...} : {
             networking.hostName = "keycloak";
 
+            # don't forget to drop a `+` under `Web Origins` for the client config in keycloak, or you're gonna get a lot of CORS errors
             services.keycloak = {
               enable = true;
               database = {
@@ -480,6 +495,7 @@
             services.nginx = {
               enable = true;
               recommendedTlsSettings = true;
+
               virtualHosts."keycloak.beard.institute" = {
                 serverAliases =  [ "keycloak.blades" ];
                 addSSL = true;
@@ -518,10 +534,6 @@
             security.acme.defaults.email = "christian.blades+acme@gmail.com";
 
             networking.firewall.allowedTCPPorts = [ 80 443 ];
-
-            security.pki.certificateFiles = [
-              ./step-ca/certs/root_ca.crt
-            ];
           })
           {
             _module.args.nixinate = {
