@@ -106,6 +106,11 @@
           ./step-ca/certs/root_ca.crt
         ];
       };
+      internalAcmeDefaults = {
+        security.acme.acceptTerms = true;
+        security.acme.defaults.email = "christian.blades+acme@gmail.com";
+        security.acme.defaults.server = "https://authority.beard.institute/acme/acme/directory";
+      };
     in {
       parkour = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -274,83 +279,51 @@
           ./metrics/prometheus-collector.nix
           ./metrics/grafana.nix
 
-          ./user-blades.nix
+          internalAcmeDefaults
+          defaultSystem
+          letMeIn
+
           ./tailscale.nix
+
           {
-            nix.settings.trusted-users = [ "blades" ];
-            security.sudo.wheelNeedsPassword = false;
+            _module.args.nixinate = {
+              host = "metrics";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
           }
         ];
       };
 
-      # nix build .#nixosConfigurations.culdesac.config.system.build.VMA
+      # nix build .#nixosConfigurations.culdesac.config.system.build.tarball
       culdesac = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ./culdesac/configuration.nix
+          letMeIn
+          defaultSystem
           ./peertube/peertube.nix
-
-          ./user-blades.nix
           ({ modulesPath, pkgs, config, ... }: {
-            imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
-            proxmox.qemuConf.name = config.networking.hostName;
-            services.cloud-init.network.enable = true;
-
-            services.openssh.enable = true;
-            services.fail2ban.enable = true;
-            nix.settings.trusted-users = [ "blades" ];
-            security.sudo.wheelNeedsPassword = false;
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+            # imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
+            # proxmox.qemuConf.name = config.networking.hostName;
+            # services.cloud-init.network.enable = true;
           })
-        ];
-      };
-
-      # unbound instead of pihole
-      adhole-prime = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./adhole/configuration.nix
-          ./adhole/unbound-adblocked.nix
-
-          ./user-blades.nix
-          ({ modulesPath, config, pkgs, ... }: {
-            imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
-            networking.hostName = "adhole-prime";
-            proxmox.qemuConf.net0 = "virtio=00:00:00:00:00:00,bridge=vmbr0,firewall=1,tag=47"; # tag=47 for dmz
-            proxmox.qemuConf.name = config.networking.hostName;
-            services.cloud-init.network.enable = true;
-
-            services.openssh.enable = true;
-            services.fail2ban.enable = true;
-            nix.settings.trusted-users = [ "blades" ];
-            security.sudo.wheelNeedsPassword = false;
-          })
-        ];
-      };
-
-      adhole = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./adhole/configuration.nix
-          ./adhole/unbound-adblocked.nix
-
-          ./user-blades.nix
-          ({ modulesPath, config, pkgs, ... }: {
-            imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
-            networking.hostName = "adhole";
-            proxmox.qemuConf.net0 = "virtio=00:00:00:00:00:00,bridge=vmbr0,firewall=1,tag=47"; # tag=47 for dmz
-            proxmox.qemuConf.name = config.networking.hostName;
-            services.cloud-init.network.enable = true;
-
-            services.openssh.enable = true;
-            services.fail2ban.enable = true;
-            nix.settings.trusted-users = [ "blades" ];
-            security.sudo.wheelNeedsPassword = false;
-          })
+          {
+            _module.args.nixinate = {
+              host = "culdesac";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
         ];
       };
 
       # nix build .#nixosConfigurations.adhole-lxc.config.system.build.tarball
-      adhole-lxc = nixpkgs.lib.nixosSystem {
+      adhole-ct-1 = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           letMeIn
@@ -371,12 +344,34 @@
         ];
       };
 
+      adhole-ct-2 = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          ./adhole/unbound-adblocked.nix
+          ({modulesPath, ...}: {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "adhole-ct-2";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+        ];
+      };
+
       # nix build .#nixosConfigurations.dashboard.config.system.build.VMA
       dashboard = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           letMeIn
           defaultSystem
+          internalAcmeDefaults
           {
             _module.args.nixinate = {
               host = "dashboard";
@@ -449,10 +444,6 @@
               };
 
             };
-
-            security.acme.acceptTerms = true;
-            security.acme.defaults.email = "christian.blades+acme@gmail.com";
-            security.acme.defaults.server = "https://authority.beard.institute/acme/acme/directory";
 
             networking.firewall.allowedTCPPorts = [ 80 443 ];
           })
@@ -560,6 +551,28 @@
           {
             _module.args.nixinate = {
               host = "authority";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+        ];
+      };
+
+      ingress = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules =[
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          ./traefik/traefik.nix
+          ({modulesPath, ...} : {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "ingress";
               sshUser = "blades";
               buildOn = "local"; # valid args are "local" or "remote"
               substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"

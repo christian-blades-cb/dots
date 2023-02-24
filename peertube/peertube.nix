@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 let
   domainName = "tube.culdesac.place";
 in
@@ -10,8 +10,9 @@ in
     database.createLocally = true;
     smtp.createLocally = true;
     configureNginx = true;
-    localDomain = domainName;
-    listenWeb = 443;
+    localDomain = lib.mkDefault domainName;
+    listenWeb = lib.mkDefault 443;
+    # listenWeb = 443;
     enableWebHttps = true;
     settings = {
       tracker.enabled = false;
@@ -23,13 +24,13 @@ in
 
   networking.firewall.allowedTCPPorts = [ 443 80 ];
 
-  services.nginx.virtualHosts."${domainName}" = {
-    enableACME = true;
-    forceSSL = true;
-  };
+  # services.nginx.virtualHosts."${domainName}" = {
+  #   enableACME = true;
+  #   forceSSL = true;
+  # };
 
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "christian.blades+acme@gmail.com";
-  };
+  # security.acme = {
+  #   acceptTerms = true;
+  #   defaults.email = "christian.blades+acme@gmail.com";
+  # };
 }
