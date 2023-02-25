@@ -156,13 +156,24 @@
         system = "x86_64-linux";
         modules = [
           ./inchhigh/configuration.nix
+
           ./inchhigh/ups-client.nix
           # ./inchhigh/hardware-configuration.nix
+
           ./tailscale.nix
-          ./user-blades.nix
+          letMeIn
+
           ./home-assistant/home-assistant.nix
           ./home-assistant/scrypted.nix
-          ./peertube/peertube.nix
+          {
+            _module.args.nixinate = {
+              host = "inchhigh";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
           {
             imports = [ zwave-js.nixosModule ];
             services.zwave-js = {
@@ -215,18 +226,29 @@
           ./relay/znc.nix
 
           ./tailscale.nix
-          ./user-blades.nix
-          "${nixpkgs}/nixos/modules/virtualisation/digital-ocean-image.nix"
+          letMeIn
+          ({ modulesPath, ... }: {
+            imports = [ "${modulesPath}/virtualisation/digital-ocean-image.nix" ];
+          })
           {
             swapDevices = [ { device = "/var/lib/swapfile"; size = 2 * 1024; } ];
             nix.settings.trusted-users = [ "root" "blades" ];
             security.sudo.wheelNeedsPassword = false;
           }
+          {
+            _module.args.nixinate = {
+              host = "relay";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
         ];
       };
 
-      # nix build .#nixosConfigurations.itg-mastodon-oracle-arm.config.system.build.OCIImage
-      itg-mastodon-oracle-arm = nixpkgs.lib.nixosSystem {
+      # nix build .#nixosConfigurations.elephant.config.system.build.OCIImage
+      elephant = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
           ./oracle-cloud/oci-options.nix
@@ -237,9 +259,18 @@
           ./itg-mastodon/oracle_smtp.nix
           ./itg-mastodon/prometheus.nix
 
-          ./user-blades.nix
+          letMeIn
           ./tailscale.nix
 
+          {
+            _module.args.nixinate = {
+              host = "elephant";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
           {
             imports = [ prometheus-mastodon.nixosModule ];
             services.mastodon_prom_exporter = {
@@ -251,11 +282,6 @@
           }
 
           ({ pkgs, ... }: {
-            services.openssh.enable = true;
-            services.fail2ban.enable = true;
-            nix.settings.trusted-users = [ "blades" ];
-            security.sudo.wheelNeedsPassword = false;
-
             # do the dance to get the right env for `tootctl`
             users.users.blades.packages = let
               tootctlScript = pkgs.writeShellScriptBin "tootctl" ''
