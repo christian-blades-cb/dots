@@ -150,6 +150,7 @@
 
   services.flatpak.enable = true;
   services.fwupd.enable = true;
+  services.pcscd.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
