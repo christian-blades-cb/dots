@@ -38,6 +38,18 @@ in {
           "192.168.129.0/24 allow"
         ];
         domain-insecure = [ "blades" "dmz" "iot" ];
+        private-domain = [ "blades" "dmz" "iot" "beard.institute" "culdesac.place" ];
+        local-zone = [
+          "beard.institute. transparent"
+        ];
+        local-data = [
+          ''"authority.beard.institute. IN A 192.168.129.216"''
+          ''"keycloak.beard.institute. IN A 192.168.129.110"''
+          ''"proxmox-prime.beard.institute. IN A 192.168.0.202"''
+          ''"dashboard.beard.institute. IN A 192.168.0.26"''
+          ''"inchhigh.beard.institute. IN A 192.168.0.42"''
+          ''"home-assistant.beard.institute. IN CNAME inchhigh.beard.institute."''
+        ];
       };
       forward-zone = [
         {
