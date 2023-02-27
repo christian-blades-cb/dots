@@ -18,6 +18,7 @@
     };
     extraOptions = [
       "--network=host"
+      "--device=/dev/ttyACM0:/dev/ttyACM0" # zigbee or zwave dongle? TODO: some udev nonsense to make them mount to a consistent place
       "--device=/dev/ttyACM1:/dev/ttyACM1" # zigbee dongle
     ];
   };

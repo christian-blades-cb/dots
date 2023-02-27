@@ -1,0 +1,24 @@
+{
+   "cniVersion": "0.4.0",
+   "name": "dmznet",
+   "plugins": [
+      {
+         "type": "bridge",
+         "bridge": "br0",
+         "isGateway": true,
+         "ipMasq": false,
+         "hairpinMode": false,
+         "ipam": {
+            "type": "dhcp"
+         },
+	 "vlan": 47
+      },
+      {
+         "type": "firewall",
+         "backend": ""
+      },
+      {
+         "type": "tuning"
+      }
+   ]
+}

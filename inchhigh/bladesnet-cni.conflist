@@ -1,0 +1,23 @@
+{
+   "cniVersion": "0.4.0",
+   "name": "bladesnet",
+   "plugins": [
+      {
+         "type": "bridge",
+         "bridge": "br0",
+         "isGateway": true,
+         "ipMasq": false,
+         "hairpinMode": false,
+         "ipam": {
+            "type": "dhcp"
+         }
+      },
+      {
+         "type": "firewall",
+         "backend": ""
+      },
+      {
+         "type": "tuning"
+      }
+   ]
+}
