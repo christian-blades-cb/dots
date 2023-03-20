@@ -31,10 +31,18 @@
           };
         };
       };
+
+      entryPoints.metrics.address = ":8082";
+      metrics.prometheus = {
+        entrypoint = "metrics";
+        addRoutersLabels = "true";
+      };
+
+      accessLog = {};
     };
 
     dynamicConfigOptions = import ./dynamic_config.nix;
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [ 80 443 8082 ];
 }

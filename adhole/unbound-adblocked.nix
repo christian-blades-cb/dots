@@ -49,6 +49,8 @@ in {
           ''"dashboard.beard.institute. IN A 192.168.0.26"''
           ''"inchhigh.beard.institute. IN A 192.168.0.42"''
           ''"home-assistant.beard.institute. IN CNAME inchhigh.beard.institute."''
+          ''"minio.beard.institute. IN A 192.168.0.135"''
+          ''"attic.beard.institute. IN A 192.168.0.120"''
         ];
       };
       forward-zone = [

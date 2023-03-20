@@ -48,15 +48,21 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    attic = {
+      url = "github:zhaofengli/attic";
+    };
   };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware, zwave-js, prometheus-mastodon, prom-nut, dashy, nixinate, agenix, ... }: rec {
+  outputs = inputs@{ self, nixpkgs, home-manager, darwin, yabai-src, nixos-hardware,
+                     zwave-js, prometheus-mastodon, prom-nut, dashy, nixinate, agenix,
+                     attic, ... }: rec {
     overlays = {
       nur = inputs.nur.overlay;
       gke-gcloud = inputs.gke-gcloud.overlays.default;
       fenix = inputs.fenix.overlay;
       govuln = inputs.govuln.overlay;
       ghz = inputs.ghz.overlay;
+      attic = inputs.attic.overlays.default;
     };
 
     apps = nixinate.nixinate.x86_64-linux self;
@@ -127,6 +133,7 @@
             security.pki.certificateFiles = [
               ./step-ca/certs/root_ca.crt
             ];
+            nix.settings.trusted-substituters = [ "https://attic.beard.institute/blades" ];
           }
           home-manager.nixosModules.home-manager
           {
@@ -513,6 +520,13 @@
               enable = true;
               recommendedTlsSettings = true;
 
+              # sessions are kinda big
+              appendHttpConfig = ''
+                proxy_buffer_size   128k;
+                proxy_buffers   4 256k;
+                proxy_busy_buffers_size   256k;
+              '';
+
               virtualHosts."keycloak.beard.institute" = {
                 serverAliases =  [ "keycloak.blades" ];
                 addSSL = true;
@@ -608,9 +622,216 @@
         ];
       };
 
+      paperless = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          ({modulesPath, ...} : {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "ingress";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+        ];
+      };
+
+      torrent = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          ({modulesPath, ...} : {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "torrent";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+          {
+            age.secrets."transmission-credentials".file = ./secrets/transmission-credentials.age;
+          }
+          ({ config, pkgs, ...}: {
+            services.transmission = {
+              enable = true;
+              openPeerPorts = true;
+              openRPCPort = true;
+              settings = {
+                rpc-bind-address = "0.0.0.0";
+                rpc-whitelist = "192.168.*.*,127.0.0.1,::1";
+                rpc-authentication-required = true;
+              };
+              credentialsFile = config.age.secrets."transmission-credentials".path;
+            };
+            environment.systemPackages = with pkgs; [ ffmpeg sshfs tmux ];
+          })
+        ];
+      };
+
+      minio = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          internalAcmeDefaults
+          ({modulesPath, ...} : {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "minio";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+          ({config, pkgs, ... }: {
+            age.secrets."minio-root-credentials".file = ./secrets/minio-root-credentials.age;
+
+            environment.systemPackages = [ pkgs.jq pkgs.minio-client ];
+            
+            services.minio = {
+              enable = true;
+              rootCredentialsFile = config.age.secrets."minio-root-credentials".path;
+            };
+
+            services.nginx = {
+              enable = true;
+              recommendedTlsSettings = true;
+              clientMaxBodySize = "0";
+              appendHttpConfig = ''
+                proxy_buffering off;
+                proxy_request_buffering off;
+              '';
+
+              virtualHosts."minio.beard.institute" = {
+                # serverAliases = [ "dashboard" "dashboard.blades" ];
+                enableACME = true;
+                addSSL = true;
+                locations."/" = {
+                  recommendedProxySettings = true;
+                  proxyPass = "http://localhost:9000";
+                  extraConfig = ''
+                    proxy_http_version 1.1;
+                    proxy_set_header Connection "";
+                    chunked_transfer_encoding off;
+                  '';
+                };
+                # locations."/minio" = {
+                #   recommendedProxySettings = true;
+                #   proxyPass = "http://localhost:9001";
+                #   proxyWebsockets = true;
+                #   extraConfig = ''
+                #     proxy_set_header X-NginX-Proxy true;
+                #     real_ip_header X-Real-IP;
+
+                #     chunked_transfer_encoding off;
+                #   '';
+                # };
+              };
+            };
+            
+            networking.firewall.allowedTCPPorts = [ 443 80 9001 ];
+          })
+        ];
+      };
+
+      attic = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          internalAcmeDefaults
+          ({modulesPath, ...} : {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "attic";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+          attic.nixosModules.atticd
+          ({config, ... }: {
+            age.secrets."attic-credentials".file = ./secrets/attic-credentials.age;
+
+            networking.firewall.allowedTCPPorts = [ 80 443 ];
+
+            services.nginx = {
+              enable = true;
+              recommendedTlsSettings = true;
+              clientMaxBodySize = "0";
+              appendHttpConfig = ''
+                proxy_buffering off;
+                proxy_request_buffering off;
+              '';
+              
+              virtualHosts."attic.beard.institute" = {
+                enableACME = true;
+                addSSL = true;
+                locations."/" = {
+                  recommendedProxySettings = true;
+                  proxyPass = "http://localhost:8080";
+                };
+              };
+            };
+            
+            services.atticd = {
+              enable = true;
+              credentialsFile = config.age.secrets."attic-credentials".path;
+              settings = {
+                storage = {
+                  type = "s3";
+                  endpoint = "https://minio.beard.institute";
+                  region = "us-east-1";
+                  bucket = "attic";
+                };
+                chunking = {
+                  # The minimum NAR size to trigger chunking
+                  #
+                  # If 0, chunking is disabled entirely for newly-uploaded NARs.
+                  # If 1, all NARs are chunked.
+                  nar-size-threshold = 64 * 1024; # 64 KiB
+
+                  # The preferred minimum size of a chunk, in bytes
+                  min-size = 16 * 1024; # 16 KiB
+
+                  # The preferred average size of a chunk, in bytes
+                  avg-size = 64 * 1024; # 64 KiB
+                  
+                  # The preferred maximum size of a chunk, in bytes
+                  max-size = 256 * 1024; # 256 KiB
+                };
+                listen = "127.0.0.1:8080";
+                api-endpoint = "https://attic.beard.institute/";
+                allowed-hosts = [ "attic.blades" "attic.beard.institute" "attic" ];
+              };
+            };
+          })
+        ];
+      };
+        
     };
 
-
-    packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
+    # packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
   };
 }

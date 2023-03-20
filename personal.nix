@@ -20,6 +20,11 @@
     virt-manager
 
     agenix.packages.x86_64-linux.default
+
+    yubikey-manager
+    yubikey-agent
+
+    attic
   ];
 
   services.caffeine.enable = true;

@@ -5,7 +5,7 @@
 
   services = {
     thinkfan = {
-      enable = true;
+      enable = false;
 
       # Entries here discovered by:
       # find /sys/devices -type f -name "temp*_input"

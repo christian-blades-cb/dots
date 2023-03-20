@@ -34,6 +34,23 @@ in
           }
         ];
       }
+      {
+        job_name = "ingress";
+        static_configs = [
+          {
+            targets = [ "ingress.beard.institute:8082" ];
+          }
+        ];
+      }
+      {
+        job_name = "minio";
+        bearer_token = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoibWluaW9yb290IiwiZXhwIjo0ODMyODYzMjk2fQ.YpiJoYeiujIsDpjjhlK6hIwa2o-sTJgOl7gn6E0kNSgRmf4PKzOHRk_rV1qOgdQxRHcVx8YNF5_8WmSGo87q_g";
+        metrics_path = "/minio/v2/metrics/cluster";
+        scheme = "http";
+        static_configs = [
+          { targets = [ "minio.beard.institute:80" ]; }
+        ];
+      }
     ];
   };
 
