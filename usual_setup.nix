@@ -42,9 +42,9 @@ in {
       enable = true;
       # package = pkgs.runCommand "firefox-0.0.0" { } "mkdir $out";
       package = if pkgs.stdenv.isDarwin then pkgs.nur.repos.toonn.apps.firefox else pkgs.firefox;
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        ublock-origin
-      ];
+      # extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      #   ublock-origin
+      # ];
     };
 
     fish = {
@@ -191,7 +191,7 @@ in {
 
     niv
     rustup
-    rust-analyzer-nightly
+    # rust-analyzer-nightly
     cargo-nextest
 
     dhall

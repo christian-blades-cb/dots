@@ -108,6 +108,7 @@
     ];
     shell = pkgs.fish;
   };
+  programs.fish.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -151,6 +152,8 @@
   services.flatpak.enable = true;
   services.fwupd.enable = true;
   services.pcscd.enable = true;
+
+  nix.settings.trusted-users = [ "blades" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

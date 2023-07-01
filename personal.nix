@@ -31,13 +31,13 @@
 
   programs.firefox = {
     enable = true;
-    extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-      ublock-origin
-      onepassword-password-manager
-    ];
     profiles.blades =
       {
         id = 0;
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          ublock-origin
+          onepassword-password-manager
+        ];
         bookmarks = [
           {
             name = "Rust stdlib docs";
