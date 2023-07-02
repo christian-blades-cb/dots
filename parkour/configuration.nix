@@ -153,6 +153,9 @@
   services.fwupd.enable = true;
   services.pcscd.enable = true;
 
+  # iphone pairing
+  services.usbmuxd.enable = true;
+
   nix.settings.trusted-users = [ "blades" ];
 
   # This value determines the NixOS release from which the default

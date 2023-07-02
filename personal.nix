@@ -25,6 +25,10 @@
     yubikey-agent
 
     attic
+    rclone
+
+    libimobiledevice
+    ifuse
   ];
 
   services.caffeine.enable = true;
