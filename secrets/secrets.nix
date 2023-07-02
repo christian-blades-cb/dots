@@ -7,6 +7,7 @@ let
   transmission = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFnn97Zwc5eBLsJyC6ELfr6G7nApzxbJ0+Ij5HwtjpSe";
   minio = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOWB4ImYEjR6kQBE0UMpR4wKS6PjNOs4FU8C7RGEdeQ1";
   attic = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOSoDc8q0wAE58KLh3IBa6t13jPl1pXo6Qfwp+LTwp2s";
+  culdesac = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIChoHx1dX8jUkRd91Jd5/kM+fKyjEwaHEEUhs9v4DT7R";
 in
 {
   "keycloak-dbpass.age".publicKeys = [ blades keycloak ];
@@ -23,4 +24,5 @@ in
   "transmission-credentials.age".publicKeys = [ blades transmission ];
   "minio-root-credentials.age".publicKeys = [ blades minio ];
   "attic-credentials.age".publicKeys = [ blades attic ];
+  "peertube-secrets.age".publicKeys = [ blades culdesac ];
 }

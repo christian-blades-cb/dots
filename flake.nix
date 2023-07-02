@@ -336,12 +336,20 @@
         modules = [
           letMeIn
           defaultSystem
+          agenix.nixosModules.default
           ./peertube/peertube.nix
           ({ modulesPath, pkgs, config, ... }: {
             imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
             # imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
             # proxmox.qemuConf.name = config.networking.hostName;
             # services.cloud-init.network.enable = true;
+            age.secrets."peertube-secrets" = {
+              file = ./secrets/peertube-secrets.age;
+              mode = "0770";
+              owner = config.services.peertube.user;
+              group = config.services.peertube.group;
+            };
+            services.peertube.secrets.secretsFile = config.age.secrets."peertube-secrets".path;
           })
           {
             _module.args.nixinate = {
