@@ -17,12 +17,35 @@ in
     settings = {
       tracker.enabled = false;
       followers.instance.enabled = false;
+      open_telemetry.metrics = {
+        enabled = true;
+        prometheus_exporter = {
+          hostname = "0.0.0.0";
+          port = 9091;
+        };
+        tracing.enabled = false;
+      };
+
+      # object_storage = {
+      #   enabled = true;
+      #   endpoint = "minio.beard.institute";
+
+      #   videos = {
+      #     bucket_name = "peertube-videos";
+      #     prefix = "videos/";
+      #   };
+
+      #   streaming_playlists = {
+      #     bucket_name = "peertube-videos";
+      #     prefix = "streaming-playlists/";
+      #   };
+      # };
     };
 
     # settings.listen.hostName = "0.0.0.0";
   };
 
-  networking.firewall.allowedTCPPorts = [ 443 80 ];
+  networking.firewall.allowedTCPPorts = [ 443 80 9091 ];
 
   # services.nginx.virtualHosts."${domainName}" = {
   #   enableACME = true;

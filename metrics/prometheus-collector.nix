@@ -51,6 +51,12 @@ in
           { targets = [ "minio.beard.institute:80" ]; }
         ];
       }
+      {
+        job_name = "culdesac";
+        static_configs = [
+          { targets = [ "culdesac.beard.institute:9091" ]; }
+        ];
+      }
     ];
   };
 

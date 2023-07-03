@@ -29,4 +29,18 @@
       StateDirectoryMode = "0750";
     };
   };
+
+  # services.borgbackup.jobs.scrypted = {
+  #   paths = [
+  #     "/var/lib/scrypted"
+  #   ];
+  #   encryption = {
+  #     mode = "repokey-blake2";
+  #     passCommand = "cat /root/borgbackup/inchhigh-key";
+  #   };
+  #   environment.BORG_RSG = "ssh -i /root/.ssh/id_rsa -o 'StrictHostKeyChecking accept-new'";
+  #   environment.BORG_REMOTE_PATH = "/usr/local/bin/borg";
+  #   repo = "machine@ds220plus.blades:~/machines/";
+  #   startAt = "daily";
+  # };
 }

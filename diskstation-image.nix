@@ -22,7 +22,6 @@
 
     boot.loader.efi.canTouchEfiVariables = false;
     boot.loader.grub = {
-      version = 2;
       device = "nodev";
       splashImage = null;
       efiInstallAsRemovable = true;

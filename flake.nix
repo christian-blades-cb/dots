@@ -641,7 +641,7 @@
           })
           {
             _module.args.nixinate = {
-              host = "ingress";
+              host = "paperless";
               sshUser = "blades";
               buildOn = "local"; # valid args are "local" or "remote"
               substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
