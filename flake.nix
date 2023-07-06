@@ -2,6 +2,7 @@
   description = "NixOS configuration";
 
   inputs = {
+    nixpkgs-master.url = "github:nixos/nixpkgs/master";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # nixpkgs.url = "github:nixos/nixpkgs?rev=30ec7dc6416c7b3d286d047ec905eaf857f712f9";
     darwin.url = "github:lnl7/nix-darwin?rev=4182ad42d5fb5001adb1f61bec3a04fae0eecb95";
@@ -255,7 +256,7 @@
       };
 
       # nix build .#nixosConfigurations.elephant.config.system.build.OCIImage
-      elephant = nixpkgs.lib.nixosSystem {
+      elephant = inputs.nixpkgs-master.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
           ./oracle-cloud/oci-options.nix
@@ -286,6 +287,14 @@
               host = "https://interestingtimes.club";
             };
             networking.firewall.allowedTCPPorts = [ 9020 ];
+            documentation = {
+              man.enable = false;
+              nixos.enable = false;
+              enable = false;
+              doc.enable = false;
+              info.enable = false;
+              dev.enable = false;
+            };
           }
 
           ({ pkgs, ... }: {
@@ -712,7 +721,7 @@
             age.secrets."minio-root-credentials".file = ./secrets/minio-root-credentials.age;
 
             environment.systemPackages = [ pkgs.jq pkgs.minio-client ];
-            
+
             services.minio = {
               enable = true;
               rootCredentialsFile = config.age.secrets."minio-root-credentials".path;
@@ -753,7 +762,7 @@
                 # };
               };
             };
-            
+
             networking.firewall.allowedTCPPorts = [ 443 80 9001 ];
           })
         ];
@@ -792,7 +801,7 @@
                 proxy_buffering off;
                 proxy_request_buffering off;
               '';
-              
+
               virtualHosts."attic.beard.institute" = {
                 enableACME = true;
                 addSSL = true;
@@ -802,7 +811,7 @@
                 };
               };
             };
-            
+
             services.atticd = {
               enable = true;
               credentialsFile = config.age.secrets."attic-credentials".path;
@@ -825,7 +834,7 @@
 
                   # The preferred average size of a chunk, in bytes
                   avg-size = 64 * 1024; # 64 KiB
-                  
+
                   # The preferred maximum size of a chunk, in bytes
                   max-size = 256 * 1024; # 256 KiB
                 };
@@ -837,7 +846,7 @@
           })
         ];
       };
-        
+
     };
 
     # packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
