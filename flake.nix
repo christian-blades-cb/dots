@@ -118,6 +118,16 @@
         security.acme.defaults.email = "christian.blades+acme@gmail.com";
         security.acme.defaults.server = "https://authority.beard.institute/acme/acme/directory";
       };
+      noDocs = {
+        documentation = {
+          man.enable = false;
+          nixos.enable = false;
+          enable = false;
+          doc.enable = false;
+          info.enable = false;
+          dev.enable = false;
+        };
+      };
     in {
       parkour = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -694,6 +704,39 @@
               credentialsFile = config.age.secrets."transmission-credentials".path;
             };
             environment.systemPackages = with pkgs; [ ffmpeg sshfs tmux ];
+          })
+        ];
+      };
+
+      calibre-web = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          noDocs
+          ({modulesPath, ...} : {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "books";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+          ({ config, pkgs, ...}: {
+            documentation.enable = false;
+            services.calibre-web = {
+              enable = true;
+              openFirewall = true;
+              listen.ip = "0.0.0.0";
+              options = {
+                enableBookUploading = true;
+                enableBookConversion = true;
+              };
+            };
           })
         ];
       };
