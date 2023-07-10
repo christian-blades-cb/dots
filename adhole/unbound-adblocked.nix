@@ -8,8 +8,8 @@ let
     src = (pkgs.fetchFromGitHub {
       owner = "StevenBlack";
       repo = "hosts";
-      rev = "3.12.5";
-      sha256 = "sha256-j9akjKqOWo/DiWAH9KgM8ZOahW9Ln6qz2yw/lMgiUwU=";
+      rev = "3.13.11";
+      sha256 = "sha256-4UXzwq/vsOlcmZYOeeEDEm2hX93q4pBA8axA+S1eUZ8=";
     } + "/hosts");
 
     phases = [ "installPhase" ];
@@ -51,6 +51,7 @@ in {
           ''"home-assistant.beard.institute. IN CNAME inchhigh.beard.institute."''
           ''"minio.beard.institute. IN A 192.168.0.135"''
           ''"attic.beard.institute. IN A 192.168.0.120"''
+          ''"books.beard.institute. IN A 192.168.0.9"''
         ];
       };
       forward-zone = [

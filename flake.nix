@@ -714,6 +714,7 @@
           letMeIn
           defaultSystem
           noDocs
+          internalAcmeDefaults
           ({modulesPath, ...} : {
             imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
           })
@@ -731,12 +732,35 @@
             services.calibre-web = {
               enable = true;
               openFirewall = true;
-              listen.ip = "0.0.0.0";
+              listen.ip = "::1";
               options = {
                 enableBookUploading = true;
                 enableBookConversion = true;
               };
             };
+
+            networking.firewall.allowedTCPPorts = [ 80 443 ];
+
+            services.nginx = {
+              enable = true;
+              recommendedTlsSettings = true;
+              clientMaxBodySize = "0";
+              appendHttpConfig = ''
+                proxy_buffering off;
+                proxy_request_buffering off;
+              '';
+
+              virtualHosts."books.beard.institute" = {
+                # serverAliases = [ "dashboard" "dashboard.blades" ];
+                enableACME = true;
+                addSSL = true;
+                locations."/" = {
+                  recommendedProxySettings = true;
+                  proxyPass = "http://localhost:8083";
+                };
+              };
+            };
+
           })
         ];
       };
