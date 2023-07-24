@@ -29,6 +29,8 @@
 
     libimobiledevice
     ifuse
+
+    gparted
   ];
 
   services.caffeine.enable = true;
