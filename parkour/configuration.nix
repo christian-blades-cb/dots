@@ -121,6 +121,11 @@
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
+    # cuda
+    cudatoolkit
+    linuxPackages.nvidia_x11
+    libGL
+    libGLU
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -146,8 +151,10 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  # for makemkv
-  boot.kernelModules = [ "sg" ];
+  boot.kernelModules = [
+    "sg" # for makemkv
+    "nvidia"
+  ];
 
   services.flatpak.enable = true;
   services.fwupd.enable = true;
@@ -157,6 +164,21 @@
   services.usbmuxd.enable = true;
 
   nix.settings.trusted-users = [ "blades" ];
+
+  # cuda
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;
+  };
+
+  hardware.nvidia = {
+    open = false;
+    modesetting.enable = true;
+    nvidiaSettings = true;
+  };
+
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
