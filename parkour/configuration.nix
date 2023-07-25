@@ -182,6 +182,20 @@
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
+  # keeping this here because hardware-configuration should be managed by nixos-generate-config
+  # I dunno, anywhere here's btrfs
+  #
+  # Adding a new subvolume goes something like:
+  #
+  # sudo mount -o btrfs /dev/disk/by-uuid/d41ee10e-dfa5-492b-a4c1-15a7d791d69f ~/mounts/vol
+  # btrfs subvolume create ~/mounts/vol/<SUBVOLUME NAME>
+  # sudo umount ~/mounts/vol
+  fileSystems."/volume1/development" = {
+    device = "/dev/disk/by-uuid/d41ee10e-dfa5-492b-a4c1-15a7d791d69f";
+    fsType = "btrfs";
+    options = [ "subvol=development" "compress=zstd" ];
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
