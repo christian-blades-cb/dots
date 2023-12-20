@@ -1,7 +1,7 @@
 { pkgs, config, lib, ... }:
 {
   virtualisation.oci-containers.containers.scrypted = {
-    image = "koush/scrypted:18-bullseye-full-v0.6.10";
+    image = "koush/scrypted:18-jammy-full-v0.69.0";
     volumes = [
       "/var/lib/scrypted:/server/volume"
     ];
