@@ -8,6 +8,8 @@ let
   minio = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOWB4ImYEjR6kQBE0UMpR4wKS6PjNOs4FU8C7RGEdeQ1";
   attic = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOSoDc8q0wAE58KLh3IBa6t13jPl1pXo6Qfwp+LTwp2s";
   culdesac = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIChoHx1dX8jUkRd91Jd5/kM+fKyjEwaHEEUhs9v4DT7R";
+  mosquitto = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK9zoCI7F1sKJrr8NyYTMozz29pRJJCkI0d9vcD6DitT";
+  inchhigh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAb92SxFrV5IlcBuagkHplYImBWikDQFL1oCLHLoX9fZ";
 in
 {
   "keycloak-dbpass.age".publicKeys = [ blades keycloak ];
@@ -25,4 +27,14 @@ in
   "minio-root-credentials.age".publicKeys = [ blades minio ];
   "attic-credentials.age".publicKeys = [ blades attic ];
   "peertube-secrets.age".publicKeys = [ blades culdesac ];
+
+  "authelia-jwtsecret.age".publicKeys = [ blades ];
+  "authelia-hmacsecret.age".publicKeys = [ blades ];
+  "authelia-sessionsecret.age".publicKeys = [ blades ];
+  "authelia-storeageencryptionkey.age".publicKeys = [ blades ];
+
+  "mosquitto-lilygo_433.age".publicKeys = [ blades mosquitto ];
+  "mosquitto-home-assistant.age".publicKeys = [ blades mosquitto ];
+
+  "zwave-js-secrets.age".publicKeys = [ blades inchhigh ];
 }

@@ -50,9 +50,9 @@ in {
     fish = {
       enable = true;
       shellAliases = {
-        ll = "${pkgs.exa}/bin/exa -l";
-        lla = "${pkgs.exa}/bin/exa -la";
-        l = "${pkgs.exa}/bin/exa";
+        ll = "${pkgs.eza}/bin/eza -l";
+        lla = "${pkgs.eza}/bin/eza -la";
+        l = "${pkgs.eza}/bin/eza";
       };
       plugins = [
         {
@@ -171,7 +171,7 @@ in {
     fd
     xsv
     ripgrep
-    exa
+    eza
     dua
     # _1password
     gibo

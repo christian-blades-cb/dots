@@ -34,6 +34,11 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  # NetworkManager-wait-online.service fails if we don't tell it to stop managing tailscale
+  networking.networkmanager.unmanaged = [ "interface-name:tailscale0" ];
+  # that didn't work, going nuclear
+  systemd.services.NetworkManager-wait-online.enable = false;
+
   # Set your time zone.
   time.timeZone = "America/New_York";
 
@@ -101,7 +106,7 @@
   users.users.blades = {
     isNormalUser = true;
     description = "Christian Blades";
-    extraGroups = [ "networkmanager" "wheel" "cdrom" "kvm" "libvirt" ];
+    extraGroups = [ "networkmanager" "wheel" "cdrom" "kvm" "libvirt" "dialout" ];
     packages = with pkgs; [
       firefox
     #  thunderbird

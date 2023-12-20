@@ -9,6 +9,7 @@
 
     yt-dlp
     ffmpeg
+    vlc
 
     sshfs
 
@@ -31,6 +32,9 @@
     ifuse
 
     gparted
+    gcc
+
+    quickemu
   ];
 
   services.caffeine.enable = true;

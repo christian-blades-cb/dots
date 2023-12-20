@@ -13,6 +13,7 @@
     localDomain = "interestingtimes.club"; # Replace with your own domain
     configureNginx = true;
     smtp.fromAddress = "noreply@interestingtimes.club"; # Email address used by Mastodon to send emails, replace with your own
+    streamingProcesses = 1; # num_cores - 1
     # extraConfig.SINGLE_USER_MODE = "true";
   };
 

@@ -2,7 +2,6 @@
   description = "NixOS configuration";
 
   inputs = {
-    nixpkgs-master.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # nixpkgs.url = "github:nixos/nixpkgs?rev=30ec7dc6416c7b3d286d047ec905eaf857f712f9";
     darwin.url = "github:lnl7/nix-darwin?rev=4182ad42d5fb5001adb1f61bec3a04fae0eecb95";
@@ -24,8 +23,6 @@
     ghz.inputs.nixpkgs.follows = "nixpkgs";
     govuln.url = "github:christian-blades-cb/govulncheck-flake";
     govuln.inputs.nixpkgs.follows = "nixpkgs";
-    nixgl.url = "github:guibou/nixGL";
-    nixgl.inputs.nixpkgs.follows = "nixpkgs";
     nixos-hardware.url = "github:nixos/nixos-hardware";
     zwave-js.url = "github:christian-blades-cb/zwavejs-server-flake";
     zwave-js.inputs.nixpkgs.follows = "nixpkgs";
@@ -140,7 +137,7 @@
           {
             nixpkgs.config.allowUnfree = true;
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
-            nixpkgs.overlays = (nixpkgs.lib.attrValues overlays) ++ [ inputs.nixgl.overlay ];
+            nixpkgs.overlays = (nixpkgs.lib.attrValues overlays);
             security.pki.certificateFiles = [
               ./step-ca/certs/root_ca.crt
             ];
@@ -180,6 +177,7 @@
 
           ./tailscale.nix
           letMeIn
+          agenix.nixosModules.default
 
           ./home-assistant/home-assistant.nix
           ./home-assistant/scrypted.nix
@@ -192,15 +190,21 @@
               hermetic = false;
             };
           }
-          {
-            imports = [ zwave-js.nixosModule ];
+          ({config, ...}: {
+            age.secrets."zwave-js-secrets" = {
+              file = ./secrets/zwave-js-secrets.age;
+              mode = "0444";
+            };
+            
             services.zwave-js = {
               enable = true;
-              device = "/dev/ttyACM0";
-              host = "127.0.0.1";
+              # device = "/dev/ttyACM0";
+              serialPort = "/dev/zwave";
+              # host = "127.0.0.1";
               port = 3000;
+              secretsConfigFile = config.age.secrets."zwave-js-secrets".path;
             };
-          }
+          })
           {
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
             nix.settings.trusted-users = [ "root" "blades" ];
@@ -266,10 +270,9 @@
       };
 
       # nix build .#nixosConfigurations.elephant.config.system.build.OCIImage
-      elephant = inputs.nixpkgs-master.lib.nixosSystem {
+      elephant = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
         modules = [
-          ./oracle-cloud/oci-options.nix
           ./oracle-cloud/oci-image.nix
 
           ./itg-mastodon/configuration.nix
@@ -914,8 +917,70 @@
         ];
       };
 
+      mosquitto = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          ({modulesPath, ...} : {
+            imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+          })
+          {
+            _module.args.nixinate = {
+              host = "mosquitto";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+          ({config, ...} : {
+            age.secrets."mosquitto-lilygo_433" = {
+              file = ./secrets/mosquitto-lilygo_433.age;
+              owner = "mosquitto";
+            };
+            age.secrets."mosquitto-home-assistant" = {
+              file = ./secrets/mosquitto-home-assistant.age;
+              owner = "mosquitto";
+            };
+            
+            services.mosquitto = {
+              enable = true;
+              listeners = [{
+                port = 1883;
+                users."home-assistant" = {
+                  passwordFile = config.age.secrets."mosquitto-home-assistant".path;
+                  acl = [
+                    "readwrite home/#"
+                    "readwrite homeassistant/#"
+                  ];
+                };
+                users."lilygo_433" = {
+                  passwordFile = config.age.secrets."mosquitto-lilygo_433".path;
+                  acl = [
+                    "readwrite home/#"
+                    "readwrite homeassistant/#"                    
+                  ];
+                };
+                users."weewx" = {
+                  acl = [
+                    "read home/#"
+                  ];
+                  password = "foobar";
+                };
+                
+              }];
+            };
+
+            networking.firewall.allowedTCPPorts = [ 1883 ];
+          })
+        ];
+      };
+      
     };
 
+    
     # packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
   };
 }
