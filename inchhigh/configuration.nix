@@ -26,6 +26,8 @@
   # environment.etc."cni/net.d/500-bladesnet.conflist".source = ./bladesnet-cni.conflist;
   # environment.etc."cni/net.d/501-dmznet.conflist".source = ./dmznet-cni.conflist;
 
+  # https://myme.no/posts/2021-11-25-nixos-home-assistant.html
+
   swapDevices = [
     {
       device = "/var/lib/swapfile";

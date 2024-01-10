@@ -35,6 +35,8 @@
     gcc
 
     quickemu
+
+    mosh
   ];
 
   services.caffeine.enable = true;

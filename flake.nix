@@ -195,7 +195,7 @@
               file = ./secrets/zwave-js-secrets.age;
               mode = "0444";
             };
-            
+
             services.zwave-js = {
               enable = true;
               # device = "/dev/ttyACM0";
@@ -425,6 +425,92 @@
               hermetic = false;
             };
           }
+        ];
+      };
+
+      # nix build .#nixosConfigurations.dashboard.config.system.build.VMA
+      shrinky = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          internalAcmeDefaults
+          {
+            _module.args.nixinate = {
+              host = "shrinky";
+              sshUser = "blades";
+              buildOn = "local";
+              substituteOnTarget = true;
+              hermetic = false;
+            };
+          }
+          ({ pkgs, config, modulesPath, ... }: {
+            imports = [
+              "${modulesPath}/virtualisation/proxmox-image.nix"
+            ];
+
+            networking.hostName = "shrinky";
+            proxmox.qemuConf.name = "shrinky";
+            services.cloud-init.network.enable = true;
+
+            nixpkgs.config.allowUnfree = true;
+            nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+            environment.systemPackages = with pkgs; [
+              git-lfs
+              cudatoolkit # GPU
+              linuxPackages.nvidia_x11 # official nvidia driver
+              libGL
+              libGLU
+              pciutils
+            ];
+
+            boot.blacklistedKernelModules = ["nouveau"]; # let's use the official nvidia driver
+            boot.kernelModules = [
+              "nvidia"
+            ];
+
+              # Enable OpenGL
+            hardware.opengl = {
+              enable = true;
+              driSupport = true;
+              driSupport32Bit = true;
+            };
+
+            hardware.nvidia = {
+              open = false; # nope, use the official one
+              modesetting.enable = true;
+              nvidiaSettings = true;
+            };
+
+            # for some reason, the kernel module doesn't install until we enable xserver
+            services.xserver = {
+              enable = true;
+              layout = "us";
+              xkbVariant = "";
+              videoDrivers = [ "nvidia" ];
+            };
+
+            virtualisation.podman = {
+              enable = true;
+              # dockerCompat = true;
+              enableNvidia = true;
+              autoPrune.enable = true;
+            };
+
+            virtualisation.docker = {
+              enable = true;
+              enableNvidia = true;
+              autoPrune.enable = true;
+            };
+
+            users.users.blades.extraGroups = [ "docker" ];
+
+            programs.mosh.enable = true;
+
+            networking.firewall.allowedTCPPorts = [ 7860 ];
+
+          })
         ];
       };
 
@@ -944,7 +1030,7 @@
               file = ./secrets/mosquitto-home-assistant.age;
               owner = "mosquitto";
             };
-            
+
             services.mosquitto = {
               enable = true;
               listeners = [{
@@ -960,7 +1046,7 @@
                   passwordFile = config.age.secrets."mosquitto-lilygo_433".path;
                   acl = [
                     "readwrite home/#"
-                    "readwrite homeassistant/#"                    
+                    "readwrite homeassistant/#"
                   ];
                 };
                 users."weewx" = {
@@ -969,7 +1055,7 @@
                   ];
                   password = "foobar";
                 };
-                
+
               }];
             };
 
@@ -977,10 +1063,10 @@
           })
         ];
       };
-      
+
     };
 
-    
+
     # packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
   };
 }
