@@ -1,0 +1,46 @@
+* iGPU container passthrough
+  - 44 is the GID for ~video~ group on proxmox
+  - 26 is the GID for ~video~ group in nixos
+  - 104 is the GID for ~render~ in proxmox
+  - 303 is the GID for ~render~ group in nixos
+#+begin_src text
+root@eliza:~# ls -l /dev/dri/card0 
+crw-rw---- 1 root video 226, 0 Jan 10 17:40 /dev/dri/card0
+root@eliza:~# ls -l /dev/dri/renderD128 
+crw-rw---- 1 root render 226, 128 Jan 10 17:40 /dev/dri/renderD128
+#+end_src    
+** references
+https://pve.proxmox.com/wiki/Unprivileged_LXC_containers
+https://www.reddit.com/r/Proxmox/comments/mttwtf/gpu_passthrough_for_unpriviliged_containers/
+** /etc/pve/lxc/${id}.conf
+#+begin_src conf
+  # allow container to access the GPU devices
+  lxc.cgroup2.devices.allow: c 226:0 rwm
+  lxc.cgroup2.devices.allow: c 226:128 rwm
+
+  # mount the GPU devices into the container
+  lxc.mount.entry: /dev/dri/card0 dev/dri/card0 none bind,optional,create=file
+  lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
+
+  #### GOAL: map hostgid -> container gid
+  #### * 44->26
+  #### * 104->303
+  # map all the host uids to (100000 + host_uid)
+  lxc.idmap = u 0 100000 65535
+  # map the host gids before 44 to (100000+host_gid)
+  lxc.idmap = g 0 100000 44
+  # map video host gid (44) to nixos video gid (26)
+  lxc.idmap = g 44 26 1
+  # map host gids from 45 -> 103 to (100000+host_gid)
+  lxc.idmap = g 45 100045 58
+  # map render host gid (104) to nixos render gid (303)
+  lxc.idmap = g 104 303 1
+  # map remaining host gids to (100000+host_gid)
+  lxc.idmap = g 304 100304 65231
+
+#+end_src
+** /etc/subgid
+#+begin_src conf
+  root:44:1
+  root:104:1
+#+end_src

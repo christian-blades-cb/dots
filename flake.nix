@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    newNixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # nixpkgs.url = "github:nixos/nixpkgs?rev=30ec7dc6416c7b3d286d047ec905eaf857f712f9";
     darwin.url = "github:lnl7/nix-darwin?rev=4182ad42d5fb5001adb1f61bec3a04fae0eecb95";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
@@ -429,7 +430,7 @@
       };
 
       # nix build .#nixosConfigurations.dashboard.config.system.build.VMA
-      shrinky = nixpkgs.lib.nixosSystem {
+      shrinky = inputs.newNixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           letMeIn
@@ -444,6 +445,8 @@
               hermetic = false;
             };
           }
+          # ./nixos/sunshine.nix
+          ./nixos/steam-headless-container.nix
           ({ pkgs, config, modulesPath, ... }: {
             imports = [
               "${modulesPath}/virtualisation/proxmox-image.nix"
@@ -454,6 +457,9 @@
             services.cloud-init.network.enable = true;
 
             nixpkgs.config.allowUnfree = true;
+            nixpkgs.config.cudaSupport = true;
+            nixpkgs.config.cudaEnableForwardCompat = true;
+
             nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
             environment.systemPackages = with pkgs; [
@@ -463,6 +469,9 @@
               libGL
               libGLU
               pciutils
+
+              # steam-tui
+              nvtop-nvidia
             ];
 
             boot.blacklistedKernelModules = ["nouveau"]; # let's use the official nvidia driver
@@ -470,7 +479,7 @@
               "nvidia"
             ];
 
-              # Enable OpenGL
+            # Enable OpenGL
             hardware.opengl = {
               enable = true;
               driSupport = true;
@@ -491,10 +500,21 @@
               videoDrivers = [ "nvidia" ];
             };
 
+            # maybe I need sound, I dunno
+            security.rtkit.enable = true;
+            sound.enable = true;
+            hardware.pulseaudio.enable = false;
+            services.pipewire = {
+              enable = true;
+              alsa.enable = true;
+              alsa.support32Bit = true;
+              pulse.enable = true;
+            };
+
             virtualisation.podman = {
               enable = true;
-              # dockerCompat = true;
-              enableNvidia = true;
+              dockerCompat = false;
+              enableNvidia = true; # LIES!
               autoPrune.enable = true;
             };
 
@@ -508,7 +528,10 @@
 
             programs.mosh.enable = true;
 
-            networking.firewall.allowedTCPPorts = [ 7860 ];
+            # can't figure out why podman won't pass through the GPU, so giving in and using docker
+            virtualisation.oci-containers.backend = "docker";
+
+            networking.firewall.allowedTCPPorts = [ 7860 5900 3389 ];
 
           })
         ];
