@@ -27,6 +27,10 @@
     nixos-hardware.url = "github:nixos/nixos-hardware";
     zwave-js.url = "github:christian-blades-cb/zwavejs-server-flake";
     zwave-js.inputs.nixpkgs.follows = "nixpkgs";
+    mnamer = {
+      url = "github:christian-blades-cb/mnamer-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     prometheus-mastodon = {
       url = "github:christian-blades-cb/mastodon_prom_exporter";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -62,6 +66,7 @@
       govuln = inputs.govuln.overlay;
       ghz = inputs.ghz.overlay;
       attic = inputs.attic.overlays.default;
+      mnamer = inputs.mnamer.overlays.mnamer;
     };
 
     apps = nixinate.nixinate.x86_64-linux self;

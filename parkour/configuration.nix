@@ -65,15 +65,15 @@
   services.xserver.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
-  services.xserver = {
+  services.xserver.xkb = {
     layout = "us";
-    xkbVariant = "";
+    variant = "";
 
     # if you change this, after `nixos-rebuild switch` do:
     #   gsettings reset org.gnome.desktop.input-sources xkb-options
     #   gsettings reset org.gnome.desktop.input-sources sources
     # (https://unix.stackexchange.com/questions/377600/in-nixos-how-to-remap-caps-lock-to-control)
-    xkbOptions = "ctrl:swapcaps";
+    options = "ctrl:swapcaps";
   };
 
   # Enable CUPS to print documents.

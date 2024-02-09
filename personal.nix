@@ -7,6 +7,7 @@
     _1password
     _1password-gui
 
+    mnamer
     yt-dlp
     ffmpeg
     vlc
