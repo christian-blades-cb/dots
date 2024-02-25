@@ -1092,8 +1092,56 @@
         ];
       };
 
-    };
+      manyfold = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          letMeIn
+          defaultSystem
+          agenix.nixosModules.default
+          internalAcmeDefaults
+          noDocs
+          {
+            _module.args.nixinate = {
+              host = "manyfold";
+              sshUser = "blades";
+              buildOn = "local"; # valid args are "local" or "remote"
+              substituteOnTarget = true; # if buildOn is "local" then it will substitute on the target, "-s"
+              hermetic = false;
+            };
+          }
+          ./nixos/manyfold.nix
+          ({modulesPath, ...}: {
+            # imports = [ "${modulesPath}/virtualisation/proxmox-lxc.nix" ];
+            imports = [ "${modulesPath}/virtualisation/proxmox-image.nix" ];
+          })
+          ({config, ...} : {
+            networking.hostName = "manyfold";
+            proxmox.qemuConf.name = "manyfold";
+            services.cloud-init.network.enable = true;
 
+            services.nginx = {
+              enable = true;
+              recommendedTlsSettings = true;
+
+              virtualHosts."manyfold.beard.institute" = {
+                enableACME = true;
+                addSSL = true;
+                locations."/" = {
+                  recommendedProxySettings = true;
+                  proxyPass = "http://localhost:3214";
+                  extraConfig = ''
+                    add_header Access-Control-Allow-Origin https://keycloak.beard.institute;
+                  '';
+                };
+              };
+            };
+
+            networking.firewall.allowedTCPPorts = [ 80 443 ];
+          })
+        ];
+      };
+
+    };
 
     # packages.x86_64-linux.nixosConfigurations = self.nixosConfigurations;
   };
