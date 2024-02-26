@@ -1131,6 +1131,7 @@
                   proxyPass = "http://localhost:3214";
                   extraConfig = ''
                     add_header Access-Control-Allow-Origin https://keycloak.beard.institute;
+                    client_max_body_size 300M;
                   '';
                 };
               };
